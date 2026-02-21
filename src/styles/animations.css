@@ -1,0 +1,16 @@
+/* Animacion para el menu movil */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Transiciones */
+.transition-all {
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
