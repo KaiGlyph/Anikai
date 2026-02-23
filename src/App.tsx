@@ -2,13 +2,27 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Header from './components/layout/header/header'
 import Footer from './components/layout/footer/footer'
+
+// Páginas Principales
 import Home from './pages/Home/Home'
 import Recommendations from './pages/Recommendations'
 import Catalog from './pages/Catalog'
 import Lists from './pages/Lists'
+
+// Páginas de Autenticación
+import Login from './pages/Auth/Login'
+import Registro from './pages/Auth/Registro'
+
+// Páginas Legales
 import Terms from './pages/Legal/Terms/Terms'
 import Privacy from './pages/Legal/Privacy/Privacy'
 import LegalNotice from './pages/Legal/LegalNotice/LegalNotice'
+
+// Estilos Globales
+import './styles/variables.css';
+import './styles/glass.css';
+import './styles/animations.css';
+
 
 export default function App() {
   return (
@@ -28,6 +42,10 @@ export default function App() {
             <Route path="/recomendaciones" element={<Recommendations />} />
             <Route path="/catalogo" element={<Catalog />} />
             <Route path="/listas" element={<Lists />} />
+            
+            {/* Páginas de Autenticación */}
+            <Route path="/login" element={<Login />} />
+            <Route path="/registro" element={<Registro />} />
             
             {/* Páginas Legales */}
             <Route path="/terminos" element={<Terms />} />

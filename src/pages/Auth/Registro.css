@@ -1,0 +1,149 @@
+/* src/pages/Auth/Registro.css */
+
+/* Copia el mismo CSS de Login.css y cambia: */
+
+.registro-page{
+    position: relative;
+    min-height: calc(100vh - 80px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1.5rem;
+    overflow: hidden;
+}
+.registro-background{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('@/assets/images/animes/Jujutsu Kaisen.jpg') center/cover no-repeat;
+    z-index: 0;
+}
+.registro-overlay{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        135deg,
+        rgba(11, 13, 16, 0.95) 0%,
+        rgba(11, 13, 16, 0.85) 50%,
+        rgba(230, 57, 70, 0.1) 100%
+    );
+    backdrop-filter: blur(10px);
+}
+.registro-container{
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 450px;
+    animation: fadeInUp 0.6s ease;
+}
+.registro-card{
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 2.5rem;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+}
+.registro-header{
+    text-align: center;
+    margin-bottom: 2rem;
+}
+.registro-title{
+    font-family: var(--font-serif);
+    font-size: 2rem;
+    font-weight: 700;
+    color: #e63946;
+    margin: 0 0 0.5rem;
+    text-shadow: 0 0 20px rgba(230, 57, 70, 0.5);
+}
+.registro-subtitle{
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    margin: 0;
+}
+.registro-form{
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+.registro-divider{
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 1.5rem 0;
+}
+.registro-footer {
+  text-align: center;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--glass-border);
+}
+
+/* Añadir estilos específicos para Registro */
+.terms-checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.terms-checkbox input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  accent-color: #e63946;
+  cursor: pointer;
+}
+
+.terms-link {
+  color: #e63946;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.terms-link:hover {
+  color: #fff;
+  text-shadow: 0 0 10px rgba(230, 57, 70, 0.6);
+}
+
+.btn-registro {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 1rem;
+    background: linear-gradient(135deg, #e63946 0%, #c1121f 100%);
+    border: none;
+    border-radius: 10px;
+    color: white;
+    font-size: 1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 20px rgba(230, 57, 70, 0.4);
+}
+
+
+/* Responsive */
+@media (max-width: 640px) {
+  .registro-card {
+    padding: 2rem 1.5rem;
+  }
+
+  .registro-title {
+    font-size: 1.75rem;
+  }
+
+  .social-login {
+    grid-template-columns: 1fr;
+  }
+}

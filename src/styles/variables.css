@@ -1,23 +1,24 @@
-/* src/styles/variables.css */
 :root {
-  /* Colors */
   --bg-primary: #0b0d10;
   --text-primary: #ffffff;
   --text-secondary: rgba(255, 255, 255, 0.7);
   --accent-red: #e63946;
   --accent-red-dark: #c1121f;
+  --accent-neon: #e63946;
+  --accent-neon-hover: #c1121f;
   --accent-green: #27ae60;
   --accent-green-light: #2ecc71;
   
-  /* Glass effect */
+  --glass-blur: 12px;
   --glass-border: rgba(255, 255, 255, 0.1);
-  --glass-bg: rgba(255, 255, 255, 0.02);
+  --glass-bg: rgba(255, 255, 255, 0.03);
+  --glass-shadow: 0 8px 32px rgba(230, 57, 70, 0.15);
   
-  /* Typography */
   --font-serif: 'Playfair Display', serif;
   --font-sans: 'Inter', sans-serif;
+  --font-main: var(--font-sans);
+  --font-modern: var(--font-sans);
   
-  /* Transitions */
   --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   --transition-base: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   --transition-slow: 0.5s cubic-bezier(0.4, 0, 0.2, 1);

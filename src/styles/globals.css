@@ -1,91 +1,70 @@
-/* Importar tipografias japonesas */
-@import url('https://fonts.googleapis.com/css2?family=Hina+Mincho:wght@700&family=Kosugi+Maru:wght@600&family=Noto+Sans+JP:wght@500;600;700&display=swap');
-
-/* Reset y estilos base */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  box-shadow: var(--glass-shadow);
+  transition: var(--transition-base);
 }
 
-body {
-  background-color: var(--bg-primary) !important;
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  box-shadow: var(--glass-shadow);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: var(--transition-epic);
+}
+
+.glass-card:hover {
+  border-color: var(--accent-red);
+  box-shadow: 0 0 25px rgba(230, 57, 70, 0.3);
+  transform: translateY(-4px);
+}
+
+header.glass {
+  border-radius: 0;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.glass-button {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--accent-red);
   color: var(--text-primary);
-  font-family: var(--font-main);
-  font-weight: 500;
-  line-height: 1.6;
-  overflow-x: hidden;
-  min-height: 100vh;
-  backdrop-filter: none !important;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: var(--transition-base);
 }
 
-main,
-#root {
-  background-color: var(--bg-primary) !important;
-  backdrop-filter: none !important;
-  width: 100%; /* ✅ AÑADIDO */
-  overflow-x: hidden; /* ✅ AÑADIDO */
+.glass-button:hover {
+  background: rgba(230, 57, 70, 0.15);
+  box-shadow: 0 0 20px rgba(230, 57, 70, 0.4);
 }
 
-/* Titulos con tipografia serif JAPONESA */
-h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-serif);
-  line-height: 1.2;
-  font-weight: 700;
+.glass-input {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  color: var(--text-primary);
+  transition: var(--transition-base);
 }
 
-/* Scroll suave */
-html {
-  scroll-behavior: smooth;
-  overflow-x: hidden; /* ✅ AÑADIDO */
-  width: 100%; /* ✅ AÑADIDO */
-}
-
-/* Asegurar que el contenido principal no quede debajo del header */
-main {
-  padding-top: 80px;
-}
-
-/* LINKS EN NAVIGACIÓN - COLORES CORRECTOS */
-nav a,
-.mobile-menu-content a {
-  color: var(--accent-neon);
-  text-decoration: none;
-  transition: var(--transition);
-  font-family: var(--font-main);
-  font-weight: 500;
-}
-
-nav a:hover,
-.mobile-menu-content a:hover {
-  color: var(--accent-neon-hover);
-  text-shadow: 0 0 8px rgba(230, 57, 70, 0.5);
-}
-
-nav a[aria-current="page"],
-nav a.active,
-.mobile-menu-content a.active {
-  color: var(--accent-neon);
-  font-weight: 700;
-  text-shadow: 0 0 8px rgba(230, 57, 70, 0.8);
-}
-
-/* ✅ REGRA BASE PARA MOBILE */
-.desktop-nav {
-  display: none;
-}
-
-.hamburger-button {
-  display: block;
-}
-
-/* ✅ MEDIA QUERY PARA DESKTOP */
-@media (min-width: 768px) {
-  .desktop-nav {
-    display: flex;
-  }
-  
-  .hamburger-button {
-    display: none;
-  }
+.glass-input:focus {
+  outline: none;
+  border-color: var(--accent-red);
+  box-shadow: 0 0 15px rgba(230, 57, 70, 0.3);
 }
