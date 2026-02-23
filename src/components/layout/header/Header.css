@@ -1,0 +1,372 @@
+/* ============================================
+   HEADER - GLASSMORPHISM + NEON RED
+   ============================================ */
+
+/* Header base con glassmorphism */
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  height: 80px;
+  
+  /* Glass effect */
+  background: rgba(11, 13, 16, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(230, 57, 70, 0.3);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+  
+  transition: all 0.3s ease;
+}
+
+/* Header cuando se hace scroll */
+.header.scrolled {
+  background: rgba(11, 13, 16, 0.95);
+  box-shadow: 0 4px 40px rgba(0, 0, 0, 0.7), 
+              0 0 30px rgba(230, 57, 70, 0.2);
+  border-bottom-color: rgba(230, 57, 70, 0.5);
+}
+
+/* Contenedor del nav */
+.header__nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 3rem;
+  max-width: 1600px;
+  margin: 0 auto;
+  height: 100%;
+}
+
+/* ============================================
+   LOGO
+   ============================================ */
+.header__logo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-decoration: none;
+  transition: transform 0.3s ease;
+}
+
+.header__logo:hover {
+  transform: scale(1.05);
+}
+
+.header__logo-img {
+  height: 56px;
+  width: 56px;
+  object-fit: contain;
+  transition: filter 0.3s ease;
+}
+
+.header__logo-text {
+  font-family: var(--font-serif);
+  font-size: 1.75rem;
+  font-weight: 400;
+  color: #ffffff;
+  letter-spacing: 0.05em;
+  text-shadow: 0 0 10px rgba(230, 57, 70, 0.3);
+}
+
+/* ============================================
+   NAVEGACIÓN DESKTOP
+   ============================================ */
+.desktopNav {
+  display: none;
+  align-items: center;
+  gap: 2rem;
+}
+
+.desktopNav__link {
+  /* TEXTO ROJO NEÓN */
+  color: #e63946;
+  text-decoration: none;
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  padding: 0.5rem 0;
+}
+
+/* Línea animada bajo el link */
+.desktopNav__link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #e63946, #c1121f);
+  transition: width 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 0 10px rgba(230, 57, 70, 0.6);
+}
+
+.desktopNav__link:hover,
+.desktopNav__link.active {
+  color: #ffffff;
+  text-shadow: 0 0 15px rgba(230, 57, 70, 0.8);
+}
+
+.desktopNav__link:hover::after,
+.desktopNav__link.active::after {
+  width: 100%;
+}
+
+/* Botones del nav */
+.desktopNav__button {
+  background: transparent;
+  border: 2px solid #e63946;
+  color: #e63946;
+  padding: 0.6rem 1.5rem;
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  backdrop-filter: blur(4px);
+}
+
+.desktopNav__button:hover {
+  background: rgba(230, 57, 70, 0.2);
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(230, 57, 70, 0.5),
+              0 0 15px rgba(230, 57, 70, 0.4);
+  backdrop-filter: blur(10px);
+}
+
+.desktopNav__button--primary {
+  background: linear-gradient(135deg, #e63946 0%, #c1121f 100%);
+  color: white;
+  border: none;
+  box-shadow: 0 4px 15px rgba(230, 57, 70, 0.5);
+}
+
+.desktopNav__button--primary:hover {
+  box-shadow: 0 8px 25px rgba(230, 57, 70, 0.7),
+              0 0 30px rgba(230, 57, 70, 0.5);
+  transform: translateY(-2px);
+}
+
+/* ============================================
+   HAMBURGUESA MÓVIL
+   ============================================ */
+.hamburgerButton {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  z-index: 1001;
+}
+
+.hamburgerButton span {
+  display: block;
+  width: 25px;
+  height: 3px;
+  background: #e63946;
+  border-radius: 3px;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 10px rgba(230, 57, 70, 0.5);
+}
+
+.hamburgerButton:hover span {
+  background: #ffffff;
+  box-shadow: 0 0 15px rgba(230, 57, 70, 0.7);
+}
+
+/* Animación hamburguesa → X */
+.hamburgerButton.active span:nth-child(1) {
+  transform: rotate(45deg) translate(5px, 5px);
+}
+.hamburgerButton.active span:nth-child(2) {
+  opacity: 0;
+}
+.hamburgerButton.active span:nth-child(3) {
+  transform: rotate(-45deg) translate(7px, -6px);
+}
+
+/* ============================================
+   MENÚ MÓVIL - VERSIÓN LIMPIA
+   ============================================ */
+.mobileMenu {
+  position: fixed;
+  top: 80px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(11, 13, 16, 0.98);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  z-index: 999;
+  animation: fadeIn 0.3s ease-out;
+  overflow-y: auto;
+}
+
+.mobileMenu__content {
+  width: 100%;
+  max-width: 100%;
+  padding: 2rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  animation: slideUp 0.3s ease-out;
+}
+
+.mobileMenu__link {
+  color: #e63946;
+  text-decoration: none;
+  font-family: var(--font-sans);
+  font-size: 1.1rem;
+  font-weight: 600;
+  padding: 1rem 1.25rem;
+  transition: all 0.3s ease;
+  border-radius: 8px;
+  text-align: left;
+  border: 1px solid transparent;
+}
+
+.mobileMenu__link:hover,
+.mobileMenu__link.active {
+  color: #ffffff;
+  background: rgba(230, 57, 70, 0.15);
+  border-color: rgba(230, 57, 70, 0.3);
+  text-shadow: 0 0 15px rgba(230, 57, 70, 0.6);
+}
+
+/* Separador antes de los botones */
+.mobileMenu__separator {
+  height: 1px;
+  background: linear-gradient(90deg, rgba(230, 57, 70, 0.5), transparent);
+  margin: 1.5rem 0;
+}
+
+.mobileMenu__buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.mobileMenu__buttons .btn {
+  width: 100%;
+  max-width: 280px;
+  margin: 0 auto;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.85rem;
+}
+
+/* ============================================
+   RESPONSIVE - MÓVIL
+   ============================================ */
+@media (max-width: 767px) {
+  .desktopNav {
+    display: none !important;
+  }
+  
+  .hamburgerButton {
+    display: flex !important;
+  }
+  
+  .header__nav {
+    padding: 0 1rem;
+  }
+  
+  .header__logo-text {
+    font-size: 1.4rem;
+  }
+  
+  .header__logo-img {
+    height: 44px;
+    width: 44px;
+  }
+  
+  .mobileMenu__link {
+    font-size: 1rem;
+    padding: 0.9rem 1.25rem;
+  }
+  
+  .mobileMenu__buttons .btn {
+    max-width: 260px;
+    padding: 0.7rem 1.25rem;
+    font-size: 0.8rem;
+  }
+}
+
+/* ============================================
+   ANIMACIONES
+   ============================================ */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { 
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (min-width: 768px) {
+  .hamburgerButton {
+    display: none !important;
+  }
+  
+  .desktopNav {
+    display: flex !important;
+  }
+  
+  .mobileMenu {
+    display: none !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .desktopNav {
+    display: none !important;
+  }
+  
+  .hamburgerButton {
+    display: flex !important;
+  }
+  
+  .header__nav {
+    padding: 0 1.5rem;
+  }
+  
+  .header__logo-text {
+    font-size: 1.5rem;
+  }
+  
+  .header__logo-img {
+    height: 48px;
+    width: 48px;
+  }
+  
+  .mobileMenu__content {
+    width: 95%;
+    padding: 1.5rem;
+  }
+  
+  .mobileMenu__link {
+    font-size: 1.1rem;
+  }
+}

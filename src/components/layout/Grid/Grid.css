@@ -1,0 +1,139 @@
+.home__content-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 2rem;
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.home__main-content {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+.home__news-sidebar {
+  position: sticky;
+  top: 51.6rem;
+  padding-left: 2rem;
+  height: fit-content;
+  max-height: calc(100% - 120px);
+  overflow: hidden;
+}
+
+.news-sidebar__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.news-sidebar__title {
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--accent-red);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.news-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.anime-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  width: 100%;
+}
+
+.upcoming-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  width: 100%;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .home__content-wrapper {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+    padding: 0 1.5rem;
+  }
+
+  .home__news-sidebar {
+    position: static;
+    max-height: none;
+    overflow: visible;
+  }
+}
+
+@media (max-width: 900px) {
+  .anime-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 500px) {
+  .anime-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 968px) {
+  .upcoming-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .anime-grid,
+  .news-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .upcoming-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .anime-grid,
+  .news-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .news-sidebar__title {
+    font-size: 1.3rem;
+  }
+  
+  .home__news-sidebar {
+
+    padding-left: 0rem;
+  }
+}
+
+@media (min-width: 968px) {
+  .anime-grid,
+  .news-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+  }
+}
+
+@media (min-width: 1400px) {
+  .home__curator,
+  .home__popular,
+  .home__upcoming,
+  .home__news {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+}

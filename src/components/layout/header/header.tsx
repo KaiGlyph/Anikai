@@ -1,13 +1,14 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from 'react-router-dom';
-import logoDark from "@/assets/images/Anikai_LogoNegro.png";
 import logoNormal from "@/assets/images/Anikai_Logo.png";
+import './Header.css'; // ← Importar CSS
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
 
+  // Efecto scroll para cambiar estilo del header
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 10);
     window.addEventListener("scroll", handleScroll);
@@ -19,7 +20,7 @@ export default function Header() {
     setIsMenuOpen(false);
   }, [location.pathname]);
 
-  // ✅ NUEVO: Añade/elimina clase 'menu-open' al body al abrir/cerrar el menú
+  // Controla clase en body para bloquear scroll cuando el menú móvil está abierto
   useEffect(() => {
     if (isMenuOpen) {
       document.body.classList.add('menu-open');
@@ -30,226 +31,104 @@ export default function Header() {
 
   return (
     <>
-      <header
-        className={`fixed top-0 left-0 right-0 w-full transition-all duration-300 glass ${
-          isScrolled ? "bg-[#0b0d10]/90" : ""
-        }`}
-        style={{
-          width: "100%",
-          position: "fixed",
-          top: 0,
-          left: 0,
-          right: 0,
-          height: "80px",
-          display: "flex",
-          alignItems: "center",
-          zIndex: 1000,
-        }}
-      >
-        <div
-          style={{
-            maxWidth: "1400px",
-            margin: "0 auto",
-            padding: "0 24px",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            width: "100%",
-            height: "100%",
-          }}
-        >
-          {/* Logo + Nombre (Izquierda) */}
-          <Link
-            to="/"
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "16px",
-              textDecoration: "none",
-            }}
-            className="hover:opacity-80 transition-opacity"
-          >
-            <img
-              src={isScrolled ? logoNormal : logoNormal}
-              alt="Anikai"
-              style={{
-                height: "56px",
-                width: "56px",
-                objectFit: "contain",
-              }}
+      {/* Header Principal */}
+      <header className={`header ${isScrolled ? 'scrolled' : ''}`}>
+        <nav className="header__nav">
+          
+          {/* Logo + Nombre */}
+          <Link to="/" className="header__logo">
+            <img 
+              src={logoNormal} 
+              alt="Anikai" 
+              className="header__logo-img" 
             />
-            <span
-              style={{
-                color: "white",
-                fontFamily: "var(--font-serif)",
-                fontSize: "28px",
-                fontWeight: "400",
-              }}
-            >
-              Anikai
-            </span>
+            <span className="header__logo-text">Anikai</span>
           </Link>
 
-          {/* Navegación Desktop - SOLO VISIBLE EN PANTALLAS >= 768px */}
-          <nav
-            style={{
-              alignItems: "center",
-              gap: "32px",
-            }}
-            className="desktop-nav"
-          >
-            <Link
-              to="/"
-              className={`text-red-400 hover:text-red-300 transition-colors ${
-                location.pathname === '/' ? 'font-bold' : ''
-              }`}
-              style={{ fontWeight: "500", fontSize: "16px" }}
+          {/* Navegación Desktop */}
+          <nav className="desktopNav">
+            <Link 
+              to="/" 
+              className={`desktopNav__link ${location.pathname === '/' ? 'active' : ''}`}
             >
               Home
             </Link>
-            <Link
-              to="/recomendaciones"
-              className={`text-red-400 hover:text-red-300 transition-colors ${
-                location.pathname === '/recomendaciones' ? 'font-bold' : ''
-              }`}
-              style={{ fontWeight: "500", fontSize: "16px" }}
+            <Link 
+              to="/recomendaciones" 
+              className={`desktopNav__link ${location.pathname === '/recomendaciones' ? 'active' : ''}`}
             >
               Recomendaciones
             </Link>
-            <Link
-              to="/catalogo"
-              className={`text-red-400 hover:text-red-300 transition-colors ${
-                location.pathname === '/catalogo' ? 'font-bold' : ''
-              }`}
-              style={{ fontWeight: "500", fontSize: "16px" }}
+            <Link 
+              to="/catalogo" 
+              className={`desktopNav__link ${location.pathname === '/catalogo' ? 'active' : ''}`}
             >
               Catálogo
             </Link>
-            <Link
-              to="/listas"
-              className={`text-red-400 hover:text-red-300 transition-colors ${
-                location.pathname === '/listas' ? 'font-bold' : ''
-              }`}
-              style={{ fontWeight: "500", fontSize: "16px" }}
+            <Link 
+              to="/listas" 
+              className={`desktopNav__link ${location.pathname === '/listas' ? 'active' : ''}`}
             >
               Listas
             </Link>
+            
+            {/* Botones de autenticación */}
+            <button className="desktopNav__button">Iniciar Sesión</button>
+            <button className="desktopNav__button desktopNav__button--primary">
+              Registrarse
+            </button>
           </nav>
 
-          {/* Menú Hamburguesa - SOLO VISIBLE EN MOBILE */}
+          {/* Botón Hamburguesa Móvil */}
           <button
-            className="hamburger-button"
-            style={{
-              color: "white",
-              background: "none",
-              border: "none",
-              cursor: "pointer",
-              fontSize: "24px",
-              padding: "8px",
-              transition: "transform 0.3s ease",
-            }}
+            className={`hamburgerButton ${isMenuOpen ? 'active' : ''}`}
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             aria-label="Menú"
           >
-            <div style={{ 
-              transition: "transform 0.3s ease, opacity 0.2s ease",
-              transform: isMenuOpen ? "rotate(90deg)" : "rotate(0deg)",
-            }}>
-              {isMenuOpen ? (
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              ) : (
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-              )}
-            </div>
+            <span></span>
+            <span></span>
+            <span></span>
           </button>
-        </div>
+        </nav>
       </header>
 
-      {/* Menú Móvil - Solo visible cuando isMenuOpen = true */}
-      {isMenuOpen && (
-        <div
-          className="mobile-menu"
-          style={{
-            position: "fixed",
-            top: "80px",
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: "transparent",
-            backdropFilter: "none",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "flex-start",
-            zIndex: 999,
-            animation: "fadeIn 0.3s ease-out",
-          }}
-          onClick={() => setIsMenuOpen(false)}
-        >
-          <div
-            className="mobile-menu-content"
-            style={{
-              width: "100%",
-              maxWidth: "100%",
-              backgroundColor: "rgba(11, 13, 16, 0.8)",
-              backdropFilter: "blur(12px)",
-              border: "none",
-              borderRadius: "12px",
-              padding: "32px 24px",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              gap: "24px",
-            }}
-            onClick={e => e.stopPropagation()}
-          >
-            <Link
-              to="/"
-              className={`text-red-400 hover:text-red-300 transition-colors ${
-                location.pathname === '/' ? 'font-bold' : ''
-              }`}
-              style={{ fontWeight: "500", fontSize: "20px", textAlign: "center", width: "100%" }}
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Home
-            </Link>
-            <Link
-              to="/recomendaciones"
-              className={`text-red-400 hover:text-red-300 transition-colors ${
-                location.pathname === '/recomendaciones' ? 'font-bold' : ''
-              }`}
-              style={{ fontWeight: "500", fontSize: "20px", textAlign: "center", width: "100%" }}
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Recomendaciones
-            </Link>
-            <Link
-              to="/catalogo"
-              className={`text-red-400 hover:text-red-300 transition-colors ${
-                location.pathname === '/catalogo' ? 'font-bold' : ''
-              }`}
-              style={{ fontWeight: "500", fontSize: "20px", textAlign: "center", width: "100%" }}
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Catálogo
-            </Link>
-            <Link
-              to="/listas"
-              className={`text-red-400 hover:text-red-300 transition-colors ${
-                location.pathname === '/listas' ? 'font-bold' : ''
-              }`}
-              style={{ fontWeight: "500", fontSize: "20px", textAlign: "center", width: "100%" }}
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Listas
-            </Link>
-          </div>
-        </div>
-      )}
+      {/* Menú Móvil Overlay */}
+{isMenuOpen && (
+  <div className="mobileMenu" onClick={() => setIsMenuOpen(false)}>
+    <div className="mobileMenu__content" onClick={e => e.stopPropagation()}>
+      
+      <Link 
+        to="/" 
+        className={`mobileMenu__link ${location.pathname === '/' ? 'active' : ''}`}
+        onClick={() => setIsMenuOpen(false)}
+      >
+        Home
+      </Link>
+      <Link 
+        to="/recomendaciones" 
+        className={`mobileMenu__link ${location.pathname === '/recomendaciones' ? 'active' : ''}`}
+        onClick={() => setIsMenuOpen(false)}
+      >
+        Recomendaciones
+      </Link>
+      <Link 
+        to="/catalogo" 
+        className={`mobileMenu__link ${location.pathname === '/catalogo' ? 'active' : ''}`}
+        onClick={() => setIsMenuOpen(false)}
+      >
+        Catálogo
+      </Link>
+      <Link 
+        to="/listas" 
+        className={`mobileMenu__link ${location.pathname === '/listas' ? 'active' : ''}`}
+        onClick={() => setIsMenuOpen(false)}
+      >
+        Listas
+      </Link>
+      
+    </div>
+  </div>
+)}
     </>
   );
 }

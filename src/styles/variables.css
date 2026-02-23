@@ -1,25 +1,25 @@
-/* Variables CSS globales */
+/* src/styles/variables.css */
 :root {
-  /* Paleta principal */
+  /* Colors */
   --bg-primary: #0b0d10;
-  --bg-secondary: #12141a;
   --text-primary: #ffffff;
   --text-secondary: rgba(255, 255, 255, 0.7);
+  --accent-red: #e63946;
+  --accent-red-dark: #c1121f;
+  --accent-green: #27ae60;
+  --accent-green-light: #2ecc71;
   
-  /* Acento neon */
-  --accent-neon: #e63946;
-  --accent-neon-hover: #ff4d6d;
+  /* Glass effect */
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-bg: rgba(255, 255, 255, 0.02);
   
-  /* Glassmorphism */
-  --glass-bg: rgba(255, 255, 255, 0.04);
-  --glass-border: rgba(230, 57, 70, 0.2);
-  --glass-blur: 14px;
+  /* Typography */
+  --font-serif: 'Playfair Display', serif;
+  --font-sans: 'Inter', sans-serif;
   
-  /* Tipografia JAPONESA */
-  --font-main: 'Noto Sans JP', 'Kosugi Maru', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-serif: 'Hina Mincho', 'Klee One', serif;
-  --font-modern: 'Kosugi Maru', 'Noto Sans JP', sans-serif;
-  
-  /* Transiciones */
-  --transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  /* Transitions */
+  --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-epic: 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }

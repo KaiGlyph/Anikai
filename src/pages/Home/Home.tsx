@@ -11,7 +11,18 @@ import kakegurui from '@/assets/images/animes/kakegurui.jpg';
 import kenjaNoMago from '@/assets/images/animes/Kenja no Mago.jpg';
 import iselevE from '@/assets/images/animes/Iseleve.jpg';
 
+//Importar estilos - RUTAS CORREGIDAS
 import './Home.css';
+import '../../styles/variables.css';
+import '../../styles/animations.css';
+import '../../components/common/Button/button.css';
+import '../../components/layout/SectionHeader/SectionHeader.css';
+import '../../components/common/Cards/AnimeCards.css';
+import '../../components/common/Cards/NewsCards.css';
+import '../../components/common/Cards/CuratorCard.css';
+import '../../components/common/Cards/UpcomingCard.css';
+import '../../components/layout/Slider/Slider.css';
+import '../../components/layout/Grid/Grid.css';
 
 export default function Home() {
   const navigate = useNavigate();
@@ -305,7 +316,7 @@ export default function Home() {
                       <div className="slider-content__meta">
                         <span className="slider-badge slider-badge--new">Nuevo</span>
                         <span className="slider-badge slider-badge--rating">
-                          <Star size={14} fill="#e63946" stroke="#e63946" />
+                          <Star size={14} fill="#ffffff" stroke="#ffffff" />
                           {slide.rating}
                         </span>
                       </div>
