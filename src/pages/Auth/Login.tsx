@@ -5,27 +5,33 @@ import { Mail, Lock, Eye, EyeOff, ArrowRight } from 'lucide-react';
 import { supabase } from '../../lib/supabaseClient';
 import './Login.css';
 
+function withTimeout<T>(promise: PromiseLike<T>, ms: number): Promise<T> {
+  return Promise.race([
+    Promise.resolve(promise),
+    new Promise<T>((_, reject) =>
+      setTimeout(() => reject(new Error('TIMEOUT')), ms)
+    ),
+  ]);
+}
+
 export default function Login() {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [formData, setFormData] = useState({
-    email: '',
+    emailOrUsername: '',
     password: '',
     rememberMe: false,
   });
 
-  // Verificar si ya hay sesión activa
+  // ← Si ya hay sesión activa, redirigir al home directamente
   useEffect(() => {
-    const checkSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
+    supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
-        // Ya está logueado, redirigir
         navigate('/');
       }
-    };
-    checkSession();
+    });
   }, [navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -34,18 +40,46 @@ export default function Login() {
     setLoading(true);
 
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: formData.email,
-        password: formData.password,
-      });
+      let email = formData.emailOrUsername.trim();
 
-      if (error) throw error;
+      // Si no tiene @, buscar email por username
+      if (!email.includes('@')) {
+        const profileResult = await withTimeout(
+          supabase.from('profiles').select('email').eq('username', email).single(),
+          5000
+        );
 
-      // Éxito - redirigir al home
-      console.log('Usuario logueado:', data.user);
+        if (profileResult.error || !profileResult.data?.email) {
+          throw new Error('Usuario no encontrado. Intenta con tu email.');
+        }
+        email = profileResult.data.email;
+      }
+
+      // Login con timeout de 8 segundos
+      const authResult = await withTimeout(
+        supabase.auth.signInWithPassword({ email, password: formData.password }),
+        8000
+      );
+
+      if (authResult.error) {
+        const msg = authResult.error.message;
+        if (msg.includes('Invalid login credentials')) {
+          throw new Error('Email/usuario o contraseña incorrectos');
+        }
+        if (msg.includes('Email not confirmed')) {
+          throw new Error('Debes verificar tu email antes de iniciar sesión');
+        }
+        throw new Error(msg);
+      }
+
       navigate('/');
+
     } catch (err: any) {
-      setError(err.message || 'Error al iniciar sesión');
+      if (err.message === 'TIMEOUT') {
+        setError('El servidor tardó demasiado. Comprueba tu conexión e inténtalo de nuevo.');
+      } else {
+        setError(err.message || 'Error al iniciar sesión');
+      }
     } finally {
       setLoading(false);
     }
@@ -53,10 +87,7 @@ export default function Login() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
-    setFormData({
-      ...formData,
-      [e.target.name]: value,
-    });
+    setFormData({ ...formData, [e.target.name]: value });
   };
 
   return (
@@ -67,39 +98,31 @@ export default function Login() {
 
       <div className="login-container">
         <div className="login-card">
-          {/* Header */}
           <div className="login-header">
             <h1 className="login-title">Bienvenido</h1>
             <p className="login-subtitle">Inicia sesión para continuar</p>
           </div>
 
-          {/* Error Message */}
-          {error && (
-            <div className="error-message">
-              {error}
-            </div>
-          )}
+          {error && <div className="error-message">{error}</div>}
 
-          {/* Formulario */}
           <form onSubmit={handleSubmit} className="login-form">
-            {/* Email */}
             <div className="form-group">
               <label className="form-label">
                 <Mail size={18} />
-                Email
+                Email o Username
               </label>
               <input
-                type="email"
-                name="email"
-                value={formData.email}
+                type="text"
+                name="emailOrUsername"
+                value={formData.emailOrUsername}
                 onChange={handleChange}
-                placeholder="tu@email.com"
+                placeholder="tu@email.com o username"
                 className="form-input"
                 required
+                autoComplete="username"
               />
             </div>
 
-            {/* Password */}
             <div className="form-group">
               <label className="form-label">
                 <Lock size={18} />
@@ -114,50 +137,30 @@ export default function Login() {
                   placeholder="••••••••"
                   className="form-input"
                   required
+                  autoComplete="current-password"
                 />
-                <button
-                  type="button"
-                  className="password-toggle"
-                  onClick={() => setShowPassword(!showPassword)}
-                >
+                <button type="button" className="password-toggle" onClick={() => setShowPassword(!showPassword)}>
                   {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
               </div>
             </div>
 
-            {/* Remember Me */}
             <div className="form-options">
               <label className="remember-me">
-                <input 
-                  type="checkbox" 
-                  name="rememberMe"
-                  checked={formData.rememberMe}
-                  onChange={handleChange}
-                />
+                <input type="checkbox" name="rememberMe" checked={formData.rememberMe} onChange={handleChange} />
                 <span>Recordarme</span>
               </label>
-              <Link to="/recuperar" className="forgot-password">
-                ¿Olvidaste tu contraseña?
-              </Link>
+              <Link to="/recuperar" className="forgot-password">¿Olvidaste tu contraseña?</Link>
             </div>
 
-            {/* Submit Button */}
-            <button 
-              type="submit" 
-              className="btn-login"
-              disabled={loading}
-            >
+            <button type="submit" className="btn-login" disabled={loading}>
               {loading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
               {!loading && <ArrowRight size={18} />}
             </button>
           </form>
 
-          {/* Divider */}
-          <div className="login-divider">
-            <span>o continúa con</span>
-          </div>
+          <div className="login-divider"><span>o continúa con</span></div>
 
-          {/* Social Login */}
           <div className="social-login">
             <button className="social-btn social-btn--google">
               <svg viewBox="0 0 24 24" width="20" height="20">
@@ -176,12 +179,9 @@ export default function Login() {
             </button>
           </div>
 
-          {/* Register Link */}
           <div className="login-footer">
             <p>¿No tienes cuenta?</p>
-            <Link to="/registro" className="register-link">
-              Regístrate gratis
-            </Link>
+            <Link to="/registro" className="register-link">Regístrate gratis</Link>
           </div>
         </div>
       </div>
