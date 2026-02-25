@@ -1,97 +1,165 @@
 /* src/pages/Auth/Registro.css */
 
-/* Copia el mismo CSS de Login.css y cambia: */
+.registro-page {
+  position: relative;
+  min-height: calc(100vh - 80px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1.5rem;
+  overflow: hidden;
+}
 
-.registro-page{
-    position: relative;
-    min-height: calc(100vh - 80px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 2rem 1.5rem;
-    overflow: hidden;
+.registro-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url('@/assets/images/animes/Jujutsu-Kaisen.jpg') center/cover no-repeat;
+  z-index: 0;
 }
-.registro-background{
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: url('@/assets/images/animes/Jujutsu Kaisen.jpg') center/cover no-repeat;
-    z-index: 0;
+
+.registro-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    135deg,
+    rgba(11, 13, 16, 0.95) 0%,
+    rgba(11, 13, 16, 0.85) 50%,
+    rgba(230, 57, 70, 0.1) 100%
+  );
+  backdrop-filter: blur(10px);
 }
-.registro-overlay{
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(
-        135deg,
-        rgba(11, 13, 16, 0.95) 0%,
-        rgba(11, 13, 16, 0.85) 50%,
-        rgba(230, 57, 70, 0.1) 100%
-    );
-    backdrop-filter: blur(10px);
+
+.registro-container {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 650px; /* ← AUMENTADO: de 450px a 650px para 2 columnas */
+  animation: fadeInUp 0.6s ease;
 }
-.registro-container{
-    position: relative;
-    z-index: 1;
-    width: 100%;
-    max-width: 450px;
-    animation: fadeInUp 0.6s ease;
+
+.registro-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  padding: 2.5rem;
+  backdrop-filter: blur(20px);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
 }
-.registro-card{
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid var(--glass-border);
-    border-radius: 20px;
-    padding: 2.5rem;
-    backdrop-filter: blur(20px);
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
-}
-.registro-header{
-    text-align: center;
-    margin-bottom: 2rem;
-}
-.registro-title{
-    font-family: var(--font-serif);
-    font-size: 2rem;
-    font-weight: 700;
-    color: #e63946;
-    margin: 0 0 0.5rem;
-    text-shadow: 0 0 20px rgba(230, 57, 70, 0.5);
-}
-.registro-subtitle{
-    color: var(--text-secondary);
-    font-size: 0.95rem;
-    margin: 0;
-}
-.registro-form{
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-}
-.registro-divider{
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin: 1.5rem 0;
-}
-.registro-footer {
+
+.registro-header {
   text-align: center;
-  margin-top: 2rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid var(--glass-border);
+  margin-bottom: 2rem;
 }
 
-/* Añadir estilos específicos para Registro */
+.registro-title {
+  font-family: var(--font-serif);
+  font-size: 2rem;
+  font-weight: 700;
+  color: #e63946;
+  margin: 0 0 0.5rem;
+  text-shadow: 0 0 20px rgba(230, 57, 70, 0.5);
+}
+
+.registro-subtitle {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+/* ───────────────────────────────────────────────────────────────────────────
+   FORMULARIO - GRID DE 2 COLUMNAS
+   ─────────────────────────────────────────────────────────────────────────── */
+.registro-form {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* ← 2 columnas iguales */
+  gap: 1.25rem; /* ← Espacio entre columnas */
+}
+
+/* Columnas individuales */
+.form-column {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(230, 57, 70, 0.3);
+  border-radius: 10px;
+  color: #fff;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.form-input::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.form-input:focus {
+  border-color: #e63946;
+  background: rgba(230, 57, 70, 0.05);
+  box-shadow: 0 0 20px rgba(230, 57, 70, 0.2);
+}
+
+/* Password Input */
+.password-input-wrapper {
+  position: relative;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.password-toggle:hover {
+  color: #e63946;
+}
+
+/* ───────────────────────────────────────────────────────────────────────────
+   ELEMENTOS FULL WIDTH (Terms y Submit)
+   ─────────────────────────────────────────────────────────────────────────── */
 .terms-checkbox {
+  /* Ocupa las 2 columnas */
+  grid-column: 1 / -1;
+  
   display: flex;
   align-items: flex-start;
   gap: 0.75rem;
   font-size: 0.85rem;
   color: var(--text-secondary);
   cursor: pointer;
+  margin-top: 0.5rem;
 }
 
 .terms-checkbox input[type="checkbox"] {
@@ -114,26 +182,157 @@
 }
 
 .btn-registro {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    padding: 1rem;
-    background: linear-gradient(135deg, #e63946 0%, #c1121f 100%);
-    border: none;
-    border-radius: 10px;
-    color: white;
-    font-size: 1rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 20px rgba(230, 57, 70, 0.4);
+  /* Ocupa las 2 columnas */
+  grid-column: 1 / -1;
+  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  background: linear-gradient(135deg, #e63946 0%, #c1121f 100%);
+  border: none;
+  border-radius: 10px;
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 20px rgba(230, 57, 70, 0.4);
 }
 
+.btn-registro:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(230, 57, 70, 0.6);
+}
 
-/* Responsive */
+.btn-registro:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+/* Divider */
+.registro-divider {
+  grid-column: 1 / -1; /* Ocupa las 2 columnas */
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.registro-divider::before,
+.registro-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--glass-border);
+}
+
+.registro-divider span {
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Social Login */
+.social-login {
+  grid-column: 1 / -1; /* Ocupa las 2 columnas */
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.social-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--glass-border);
+  border-radius: 10px;
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.social-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: #e63946;
+  transform: translateY(-2px);
+}
+
+.social-btn--google:hover {
+  border-color: #4285F4;
+}
+
+.social-btn--discord:hover {
+  border-color: #5865F2;
+}
+
+/* Footer */
+.registro-footer {
+  grid-column: 1 / -1; /* Ocupa las 2 columnas */
+  text-align: center;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--glass-border);
+}
+
+.registro-footer p {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin: 0 0 0.5rem;
+}
+
+.login-link {
+  color: #e63946;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.login-link:hover {
+  color: #fff;
+  text-shadow: 0 0 10px rgba(230, 57, 70, 0.6);
+}
+
+/* Error Message */
+.error-message {
+  grid-column: 1 / -1; /* Ocupa las 2 columnas */
+  background: rgba(230, 57, 70, 0.15);
+  border: 1px solid rgba(230, 57, 70, 0.4);
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  color: #e63946;
+  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+/* ───────────────────────────────────────────────────────────────────────────
+   RESPONSIVE - Móvil: 1 columna
+   ─────────────────────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .registro-container {
+    max-width: 450px; /* ← Vuelve a 450px en móvil */
+  }
+  
+  .registro-form {
+    grid-template-columns: 1fr; /* ← 1 columna en móvil */
+  }
+  
+  .social-login {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (max-width: 640px) {
   .registro-card {
     padding: 2rem 1.5rem;
@@ -142,8 +341,16 @@
   .registro-title {
     font-size: 1.75rem;
   }
+}
 
-  .social-login {
-    grid-template-columns: 1fr;
+/* Animation */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }

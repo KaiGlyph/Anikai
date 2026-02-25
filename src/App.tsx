@@ -5,9 +5,8 @@ import Footer from './components/layout/footer/footer'
 
 // Páginas Principales
 import Home from './pages/Home/Home'
-import Recommendations from './pages/Recommendations'
-import Catalog from './pages/Catalog'
-import Lists from './pages/Lists'
+import Recommendations from './pages/Recomendations/Recomendations'
+import Catalog from './pages/Catalog/Catalog'
 
 // Páginas de Autenticación
 import Login from './pages/Auth/Login'
@@ -41,7 +40,6 @@ export default function App() {
             <Route path="/" element={<Home />} />
             <Route path="/recomendaciones" element={<Recommendations />} />
             <Route path="/catalogo" element={<Catalog />} />
-            <Route path="/listas" element={<Lists />} />
             
             {/* Páginas de Autenticación */}
             <Route path="/login" element={<Login />} />

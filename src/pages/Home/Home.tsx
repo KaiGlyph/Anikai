@@ -1,17 +1,27 @@
 // src/pages/Home/Home.tsx
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Play, Star, Clock, ArrowRight, Award, Flame, Calendar, Newspaper, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Play, Star, ArrowRight, Award, Flame, Calendar, Newspaper, ChevronLeft, ChevronRight } from 'lucide-react';
 
-// Importar imágenes
-import jujutsuKaisen from '@/assets/images/animes/Jujutsu Kaisen.jpg';
-import jigokuraku from '@/assets/images/animes/Jigokuraku.jpg';
-import kaiju8Gou from '@/assets/images/animes/Kaijuu 8-gou.jpg';
-import kakegurui from '@/assets/images/animes/kakegurui.jpg';
-import kenjaNoMago from '@/assets/images/animes/Kenja no Mago.jpg';
-import iselevE from '@/assets/images/animes/Iseleve.jpg';
+// ─────────────────────────────────────────────────────────────────────────────
+// IMPORTACIÓN DE IMÁGENES - Nombres exactos de tus archivos
+// ─────────────────────────────────────────────────────────────────────────────
 
-//Importar estilos - RUTAS CORREGIDAS
+// Animes actuales y populares (2024-2025)
+import soloLeveling from '@/assets/images/animes/Ore-dake-Level-Up-na-Ken.jpg';
+import demonSlayer from '@/assets/images/animes/Kimetsu-no-Yaiba.jpg';
+import dandadan from '@/assets/images/animes/Dandadan.jpg';
+import jujutsuKaisen from '@/assets/images/animes/Jujutsu-Kaisen.jpg';
+import spyFamily from '@/assets/images/animes/Spy-X-Family.jpg';
+import kaiju8Gou from '@/assets/images/animes/Kaijuu-8-gou.jpg';
+import chainsawMan from '@/assets/images/animes/ChainsawMan.jpg';
+import myHeroAcademia from '@/assets/images/animes/Boku-no-Hero.jpeg';
+
+// Animes clásicos/populares para noticias
+import onePunchMan from '@/assets/images/animes/One-Punch-Man.jpg';
+import naruto from '@/assets/images/animes/Naruto.jpg';
+
+// Importar estilos
 import './Home.css';
 import '../../styles/variables.css';
 import '../../styles/animations.css';
@@ -31,7 +41,9 @@ export default function Home() {
   const [isPaused, setIsPaused] = useState(false);
   const sliderRef = useRef<HTMLDivElement>(null);
 
-  // SLIDES DEL CARRUSEL - Slide 0 = Hero, resto = Animes
+  // ───────────────────────────────────────────────────────────────────────────
+  // CARRUSEL - ANIMES DESTACADOS (Temporadas nuevas 2024-2025)
+  // ───────────────────────────────────────────────────────────────────────────
   const carouselSlides = [
     {
       type: 'hero',
@@ -42,74 +54,76 @@ export default function Home() {
     },
     {
       type: 'anime',
-      id: 7,
-      title: 'Solo Leveling',
-      image: jujutsuKaisen,
-      rating: 8.8,
-      year: 2024,
-      episodes: 12,
-      addedDate: 'Hace 2 días',
-      description: 'Sung Jin-Woo, el cazador más débil, obtiene un poder único que le permite subir de nivel infinitamente.',
+      id: 1,
+      title: 'Solo Leveling Season 2',
+      image: soloLeveling,
+      rating: 8.9,
+      year: 2025,
+      episodes: 13,
+      addedDate: 'Enero 2025',
+      description: 'Sung Jin-Woo regresa con más poder. La batalla contra los Monarcas alcanza su punto máximo en esta segunda temporada épica.',
       genres: ['Acción', 'Fantasía', 'Aventura'],
     },
     {
       type: 'anime',
-      id: 8,
-      title: 'Frieren',
-      image: jigokuraku,
-      rating: 9.1,
-      year: 2023,
-      episodes: 28,
-      addedDate: 'Hace 3 días',
-      description: 'La elfa Frieren emprende un viaje para comprender mejor a los humanos después de la muerte del héroe.',
-      genres: ['Aventura', 'Drama', 'Fantasía'],
-    },
-    {
-      type: 'anime',
-      id: 9,
-      title: 'Demon Slayer',
-      image: kaiju8Gou,
+      id: 2,
+      title: 'Dandadan',
+      image: dandadan,
       rating: 8.7,
       year: 2024,
-      episodes: 11,
-      addedDate: 'Hace 5 días',
-      description: 'Tanjiro lucha contra demonios para encontrar una cura para su hermana Nezuko.',
-      genres: ['Acción', 'Sobrenatural', 'Histórico'],
-    },
-    {
-      type: 'anime',
-      id: 10,
-      title: 'Chainsaw Man',
-      image: kakegurui,
-      rating: 8.5,
-      year: 2022,
       episodes: 12,
-      addedDate: 'Hace 1 semana',
-      description: 'Denji se convierte en Chainsaw Man para pagar las deudas de su padre.',
-      genres: ['Acción', 'Sobrenatural', 'Gore'],
+      addedDate: 'Octubre 2024',
+      description: 'Una comedia sobrenatural única donde alienígenas y fantasmas colisionan. Momo y Okarun viven aventuras increíbles.',
+      genres: ['Acción', 'Comedia', 'Sobrenatural'],
     },
     {
       type: 'anime',
-      id: 11,
-      title: 'Attack on Titan',
-      image: kenjaNoMago,
-      rating: 9.0,
+      id: 3,
+      title: 'Jujutsu Kaisen',
+      image: jujutsuKaisen,
+      rating: 8.7,
       year: 2023,
-      episodes: 87,
-      addedDate: 'Hace 1 semana',
-      description: 'La humanidad lucha por sobrevivir contra los titanes devoradores de hombres.',
-      genres: ['Acción', 'Drama', 'Misterio'],
+      episodes: 47,
+      addedDate: 'En emisión',
+      description: 'Yuji Itadori y sus compañeros luchan contra las maldiciones en el mundo de la hechicería.',
+      genres: ['Acción', 'Sobrenatural', 'Shounen'],
+    },
+    {
+      type: 'anime',
+      id: 4,
+      title: 'Kaiju No. 8',
+      image: kaiju8Gou,
+      rating: 8.5,
+      year: 2024,
+      episodes: 12,
+      addedDate: '2024',
+      description: 'Kafka Hibino sueña con unirse a la Fuerza de Defensa para luchar contra kaijus, pero su cuerpo se transforma en uno.',
+      genres: ['Acción', 'Sci-Fi', 'Shounen'],
+    },
+    {
+      type: 'anime',
+      id: 5,
+      title: 'Spy x Family',
+      image: spyFamily,
+      rating: 8.6,
+      year: 2024,
+      episodes: 37,
+      addedDate: 'En emisión',
+      description: 'Un espía, una asesina y una telépata forman una familia falsa. Comedia y acción garantizada.',
+      genres: ['Acción', 'Comedia', 'Slice of Life'],
     },
   ];
 
-  // Animes populares
+  // ───────────────────────────────────────────────────────────────────────────
+  // ANIMES POPULARES (Tendencias actuales)
+  // ───────────────────────────────────────────────────────────────────────────
   const featuredAnime = [
     {
       id: 1,
       title: 'Jujutsu Kaisen',
       image: jujutsuKaisen,
-      rating: 8.6,
-      year: 2020,
+      rating: 8.7,
+      year: 2023,
       episodes: 47,
       status: 'En emisión',
     },
@@ -117,110 +131,116 @@ export default function Home() {
       id: 2,
       title: 'Kaiju No. 8',
       image: kaiju8Gou,
-      rating: 8.4,
+      rating: 8.5,
       year: 2024,
       episodes: 12,
+      status: 'Finalizado',
+    },
+    {
+      id: 3,
+      title: 'Spy x Family',
+      image: spyFamily,
+      rating: 8.6,
+      year: 2024,
+      episodes: 37,
       status: 'En emisión',
     },
     {
-      id: 3,
-      title: 'Kakegurui',
-      image: kakegurui,
-      rating: 7.8,
-      year: 2017,
-      episodes: 24,
-      status: 'Finalizado',
-    },
-    {
       id: 4,
-      title: 'Jigokuraku',
-      image: jigokuraku,
-      rating: 8.5,
-      year: 2023,
-      episodes: 13,
+      title: 'Chainsaw Man',
+      image: chainsawMan,
+      rating: 8.6,
+      year: 2022,
+      episodes: 12,
       status: 'Finalizado',
     },
   ];
 
-  // Recomendación principal
+  // ───────────────────────────────────────────────────────────────────────────
+  // RECOMENDACIÓN PRINCIPAL
+  // ───────────────────────────────────────────────────────────────────────────
   const curatorPick = {
     id: 100,
-    title: 'Jigokuraku',
-    image: jigokuraku,
-    rating: 8.5,
-    description: 'Un ninja condenado a muerte es enviado a una isla misteriosa para buscar el elixir de la vida. Una obra maestra de acción, misterio y supervivencia.',
-    genres: ['Acción', 'Aventura', 'Sobrenatural', 'Seinen'],
+    title: 'Solo Leveling',
+    image: soloLeveling,
+    rating: 8.9,
+    description: 'Sung Jin-Woo, el cazador más débil de la humanidad, obtiene un poder único que le permite subir de nivel infinitamente. Una obra maestra del género action-fantasy.',
+    genres: ['Acción', 'Fantasía', 'Aventura', 'Shounen'],
   };
 
-  // Próximos estrenos
+  // ───────────────────────────────────────────────────────────────────────────
+  // PRÓXIMOS ESTRENOS (2025)
+  // ───────────────────────────────────────────────────────────────────────────
   const upcomingReleases = [
     {
-      id: 11,
-      title: 'Attack on Titan: Final',
-      image: jujutsuKaisen,
-      releaseDate: '15 Mar 2025',
+      id: 1,
+      title: 'Demon Slayer: Infinity Castle',
+      image: demonSlayer,
+      releaseDate: 'Marzo 2025',
       type: 'Película',
     },
     {
-      id: 12,
-      title: 'One Piece: Egghead',
-      image: jigokuraku,
-      releaseDate: '22 Mar 2025',
-      type: 'Temporada',
-    },
-    {
-      id: 13,
-      title: 'My Hero Academia 8',
-      image: kaiju8Gou,
-      releaseDate: '5 Abr 2025',
-      type: 'Temporada',
-    },
-    {
-      id: 14,
-      title: 'Bleach: TYBW Part 3',
-      image: kakegurui,
-      releaseDate: '12 Abr 2025',
-      type: 'Arco',
-    },
-  ];
-
-  // Noticias
-  const news = [
-    {
-      id: 1,
-      title: 'Anunciada la temporada 2 de Solo Leveling',
-      excerpt: 'El estudio A-1 Pictures confirma que la segunda temporada llegará en octubre de 2025...',
-      date: '20 Feb 2025',
-      category: 'Anuncios',
-      image: jujutsuKaisen,
-    },
-    {
       id: 2,
-      title: 'Demon Slayer rompe récords de taquilla',
-      excerpt: 'La última película de la franquicia supera los 100 millones de dólares en su primera semana...',
-      date: '19 Feb 2025',
-      category: 'Películas',
-      image: jigokuraku,
+      title: 'My Hero Academia Season 8',
+      image: myHeroAcademia,
+      releaseDate: 'Mayo 2025',
+      type: 'Temporada',
     },
     {
       id: 3,
-      title: 'Nuevo anime de Studio Ghibli en producción',
-      excerpt: 'Hayao Miyazaki trabaja en un nuevo proyecto que se estrenará en 2026...',
-      date: '18 Feb 2025',
-      category: 'Producción',
-      image: kaiju8Gou,
+      title: 'One Punch Man Season 3',
+      image: onePunchMan,
+      releaseDate: '2025',
+      type: 'Temporada',
     },
     {
       id: 4,
-      title: 'Crunchyroll anuncia nuevos doblajes',
-      excerpt: 'La plataforma confirma el doblaje al español de 20 animes populares...',
-      date: '17 Feb 2025',
-      category: 'Streaming',
-      image: kakegurui,
+      title: 'Naruto: Nuevo Proyecto',
+      image: naruto,
+      releaseDate: '2025',
+      type: 'Especial',
     },
   ];
 
-  // Autoplay
+  // ───────────────────────────────────────────────────────────────────────────
+  // NOTICIAS DE ACTUALIDAD (Febrero 2025)
+  // ───────────────────────────────────────────────────────────────────────────
+  const news = [
+    {
+      id: 1,
+      title: 'Solo Leveling Season 2 rompe récords de audiencia',
+      excerpt: 'La segunda temporada supera los 50 millones de visualizaciones en su primera semana en Crunchyroll...',
+      date: '24 Feb 2025',
+      category: 'Streaming',
+      image: soloLeveling,
+    },
+    {
+      id: 2,
+      title: 'Demon Slayer: Infinity Castle confirma fecha de estreno',
+      excerpt: 'Ufotable anuncia que la trilogía de películas del arco final llegará a cines en marzo de 2025...',
+      date: '23 Feb 2025',
+      category: 'Películas',
+      image: demonSlayer,
+    },
+    {
+      id: 3,
+      title: 'Dandadan renueva por segunda temporada',
+      excerpt: 'Science SARU confirma que la comedia sobrenatural tendrá continuación tras el éxito de su primera temporada...',
+      date: '22 Feb 2025',
+      category: 'Anuncios',
+      image: dandadan,
+    },
+    {
+      id: 4,
+      title: 'Jujutsu Kaisen confirma proyecto especial para 2025',
+      excerpt: 'MAPPA revela que está trabajando en un contenido especial de JJK tras el final del manga...',
+      date: '21 Feb 2025',
+      category: 'Producción',
+      image: jujutsuKaisen,
+    },
+  ];
+
+  // Autoplay del carrusel
   useEffect(() => {
     if (isPaused) return;
     
@@ -327,7 +347,7 @@ export default function Home() {
                       <div className="slider-content__info">
                         <span>{slide.year}</span>
                         <span>•</span>
-                        <span>{slide.episodes} episodios</span>
+                        <span>{slide.episodes} {typeof slide.episodes === 'number' ? 'episodios' : ''}</span>
                         <span>•</span>
                         <span className="slider-added">{slide.addedDate}</span>
                       </div>
