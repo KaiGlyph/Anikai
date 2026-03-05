@@ -4,16 +4,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '../../lib/supabaseClient';
 import LoginModal from '../../components/common/LoginModal';
 import { 
-  Star, 
-  Calendar, 
-  Clock, 
-  Play, 
-  Heart, 
-  Plus, 
-  Check, 
-  ChevronDown,
-  Share2,
-  Bookmark
+  Star, Calendar, Clock, Play, Heart, Plus, Check,
+  Share2, BookOpen, X
 } from 'lucide-react';
 import './AnimeDetail.css';
 
@@ -45,59 +37,73 @@ interface UserList {
   anime_count: number;
 }
 
+type WatchStatus = 'watching' | 'completed' | 'planned' | 'dropped' | '';
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CONSTANTES
+// ─────────────────────────────────────────────────────────────────────────────
+const STATUS_OPTIONS: { value: WatchStatus; label: string; color: string }[] = [
+  { value: 'watching',  label: 'Viendo',    color: '#3b82f6' },
+  { value: 'completed', label: 'Completado', color: '#2a9d8f' },
+  { value: 'planned',   label: 'Planeado',   color: '#f4a261' },
+  { value: 'dropped',   label: 'Abandonado', color: '#e63946' },
+];
+
 // ─────────────────────────────────────────────────────────────────────────────
 // COMPONENTE PRINCIPAL
 // ─────────────────────────────────────────────────────────────────────────────
 export default function AnimeDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  
-  // Estados
+
+  // Anime
   const [anime, setAnime] = useState<Anime | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  
-  // Estados de autenticación
+
+  // Auth
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
-  
-  // Estados del modal
+
+  // Modales / UI
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showListSelector, setShowListSelector] = useState(false);
-  
-  // Estados de listas
+
+  // Listas
   const [userLists, setUserLists] = useState<UserList[]>([]);
-  const [selectedList, setSelectedList] = useState<string>('');
-  const [addingToList, setAddingToList] = useState(false);
-  
-  // Estado de anime en listas
+  const [animeInListIds, setAnimeInListIds] = useState<string[]>([]);
   const [isInLists, setIsInLists] = useState(false);
-  const [userStatus, setUserStatus] = useState<string>('');
+  const [togglingList, setTogglingList] = useState<string | null>(null);
+
+  // Panel de seguimiento
+  const [trackingListId, setTrackingListId] = useState<string | null>(null);
+  const [currentStatus, setCurrentStatus] = useState<WatchStatus>('');
+  const [episodesWatched, setEpisodesWatched] = useState<number>(0);
+  const [savingTracking, setSavingTracking] = useState(false);
+  const [trackingDirty, setTrackingDirty] = useState(false);
+
+  // Me gusta
+  const [isLiked, setIsLiked] = useState(false);
+  const [likeListId, setLikeListId] = useState<string | null>(null);
+  const [likingAnime, setLikingAnime] = useState(false);
+
+  // Compartir
+  const [copied, setCopied] = useState(false);
 
   // ───────────────────────────────────────────────────────────────────────────
-  // EFECTO: Verificar autenticación al montar
+  // EFECTOS
   // ───────────────────────────────────────────────────────────────────────────
   useEffect(() => {
-    const checkAuth = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
+    supabase.auth.getSession().then(({ data: { session } }) => {
       setIsLoggedIn(!!session);
       setUserId(session?.user?.id || null);
-    };
-    checkAuth();
+    });
   }, []);
 
-  // ───────────────────────────────────────────────────────────────────────────
-  // EFECTO: Cargar datos del anime
-  // ───────────────────────────────────────────────────────────────────────────
   useEffect(() => {
-    if (id) {
-      fetchAnime(id);
-    }
+    if (id) fetchAnime(id);
   }, [id]);
 
-  // ───────────────────────────────────────────────────────────────────────────
-  // EFECTO: Cargar listas del usuario cuando está logueado
-  // ───────────────────────────────────────────────────────────────────────────
   useEffect(() => {
     if (isLoggedIn && userId) {
       fetchUserLists();
@@ -105,26 +111,52 @@ export default function AnimeDetail() {
     }
   }, [isLoggedIn, userId]);
 
+  useEffect(() => {
+    if (isLoggedIn && userId && anime) {
+      supabase
+        .from('user_lists')
+        .select('id')
+        .eq('user_id', userId)
+        .eq('name', 'Me gusta')
+        .maybeSingle()
+        .then(({ data }) => {
+          if (!data?.id) return;
+          setLikeListId(data.id);
+          supabase
+            .from('user_list_animes')
+            .select('id')
+            .eq('list_id', data.id)
+            .eq('anime_id', anime.id)
+            .maybeSingle()
+            .then(({ data: entry }) => setIsLiked(!!entry));
+        });
+    }
+  }, [isLoggedIn, userId, anime]);
+
   // ───────────────────────────────────────────────────────────────────────────
-  // FUNCIÓN: Obtener datos del anime desde Supabase
+  // FUNCIÓN: Episodios según estado
+  // — completed → total episodios del anime
+  // — planned   → 0
+  // — watching / dropped → el valor manual del usuario
+  // ───────────────────────────────────────────────────────────────────────────
+  const getEpisodesForStatus = (status: WatchStatus, totalEps: number): number => {
+    if (status === 'completed') return totalEps;
+    if (status === 'planned') return 0;
+    return episodesWatched;
+  };
+
+  // ───────────────────────────────────────────────────────────────────────────
+  // FUNCIÓN: Obtener anime
   // ───────────────────────────────────────────────────────────────────────────
   const fetchAnime = async (animeId: string) => {
     try {
       setLoading(true);
-      setError(null);
-
       const { data, error } = await supabase
-        .from('animes')
-        .select('*')
-        .eq('id', animeId)
-        .single();
-
+        .from('animes').select('*').eq('id', animeId).single();
       if (error) throw error;
       if (!data) throw new Error('Anime no encontrado');
-
       setAnime(data);
     } catch (err: any) {
-      console.error('Error al cargar anime:', err);
       setError(err.message || 'Error al cargar el anime');
     } finally {
       setLoading(false);
@@ -132,167 +164,199 @@ export default function AnimeDetail() {
   };
 
   // ───────────────────────────────────────────────────────────────────────────
-  // FUNCIÓN: Obtener listas del usuario
+  // FUNCIÓN: Obtener listas
   // ───────────────────────────────────────────────────────────────────────────
   const fetchUserLists = async () => {
     if (!userId) return;
-
-    try {
-      const { data, error } = await supabase.rpc('get_user_lists', {
-        p_user_id: userId,
-      });
-
-      if (error) throw error;
-      setUserLists(data || []);
-      
-      // Seleccionar primera lista por defecto (Viendo)
-      if (data && data.length > 0) {
-        const watchingList = data.find((l: UserList) => l.name === 'Viendo');
-        setSelectedList(watchingList?.id || data[0].id);
-      }
-    } catch (err: any) {
-      console.error('Error al cargar listas:', err);
-    }
+    const { data } = await supabase.rpc('get_user_lists', { p_user_id: userId });
+    setUserLists(data || []);
   };
 
   // ───────────────────────────────────────────────────────────────────────────
-  // FUNCIÓN: Verificar si el anime ya está en listas
+  // FUNCIÓN: Verificar en qué listas está + cargar seguimiento
   // ───────────────────────────────────────────────────────────────────────────
   const checkIfInLists = async () => {
-    if (!userId || !anime) return;
-
+    if (!userId || !id) return;
     try {
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from('user_list_animes')
-        .select('list_id, status')
-        .eq('anime_id', anime.id)
-        .in('list_id', userLists.map(l => l.id))
-        .maybeSingle();
+        .select('list_id, status, episodes_watched')
+        .eq('anime_id', id);
 
-      if (error) throw error;
-      
-      setIsInLists(!!data);
-      setUserStatus(data?.status || '');
-    } catch (err: any) {
+      const listIds = data?.map((d: any) => d.list_id) || [];
+      setAnimeInListIds(listIds);
+      setIsInLists(listIds.length > 0);
+
+      if (data && data.length > 0) {
+        const first = data[0];
+        setTrackingListId(first.list_id);
+        setCurrentStatus(first.status || '');
+        setEpisodesWatched(first.episodes_watched || 0);
+      }
+    } catch (err) {
       console.error('Error al verificar listas:', err);
     }
   };
 
   // ───────────────────────────────────────────────────────────────────────────
-  // FUNCIÓN: Manejar click en "Añadir a lista"
+  // FUNCIÓN: Toggle lista con checkbox
   // ───────────────────────────────────────────────────────────────────────────
-  const handleAddToListClick = () => {
-    if (!isLoggedIn) {
-      setShowLoginModal(true); // ← Mostrar modal de login
-    } else {
-      setShowListSelector(!showListSelector); // ← Mostrar selector de listas
-    }
-  };
-
-  // ───────────────────────────────────────────────────────────────────────────
-  // FUNCIÓN: Añadir anime a lista seleccionada
-  // ───────────────────────────────────────────────────────────────────────────
-  const handleAddToList = async () => {
-    if (!selectedList || !anime || !userId) return;
-
+  const handleToggleList = async (listId: string) => {
+    if (!anime || !userId || togglingList) return;
+    setTogglingList(listId);
+    const isIn = animeInListIds.includes(listId);
     try {
-      setAddingToList(true);
-
-      const { error } = await supabase.rpc('add_anime_to_list', {
-        p_list_id: selectedList,
-        p_anime_id: anime.id,
-        p_status: 'planned',
-      });
-
-      if (error) throw error;
-
-      setIsInLists(true);
-      setShowListSelector(false);
-      
-      // Recargar listas para actualizar contador
+      if (isIn) {
+        await supabase.rpc('remove_anime_from_list', { p_list_id: listId, p_anime_id: anime.id });
+        const newIds = animeInListIds.filter(l => l !== listId);
+        setAnimeInListIds(newIds);
+        setIsInLists(newIds.length > 0);
+        if (trackingListId === listId) {
+          setTrackingListId(null);
+          setCurrentStatus('');
+          setEpisodesWatched(0);
+        }
+      } else {
+        await supabase.rpc('add_anime_to_list', { p_list_id: listId, p_anime_id: anime.id, p_status: 'planned' });
+        const newIds = [...animeInListIds, listId];
+        setAnimeInListIds(newIds);
+        setIsInLists(true);
+        if (!trackingListId) {
+          setTrackingListId(listId);
+          setCurrentStatus('planned');
+          setEpisodesWatched(0);
+        }
+      }
       fetchUserLists();
-      
     } catch (err: any) {
-      console.error('Error al añadir a lista:', err);
-      alert('Error al añadir a lista: ' + err.message);
+      alert('Error: ' + err.message);
     } finally {
-      setAddingToList(false);
+      setTogglingList(null);
     }
   };
 
   // ───────────────────────────────────────────────────────────────────────────
-  // FUNCIÓN: Eliminar anime de listas
+  // FUNCIÓN: Guardar seguimiento
   // ───────────────────────────────────────────────────────────────────────────
-  const handleRemoveFromLists = async () => {
-    if (!anime || !userId) return;
-
+  const handleSaveTracking = async () => {
+    if (!trackingListId || !anime || !userId) return;
     try {
-      const { error } = await supabase.rpc('remove_anime_from_list', {
-        p_list_id: selectedList || userLists[0]?.id,
-        p_anime_id: anime.id,
-      });
+      setSavingTracking(true);
+
+      const eps = getEpisodesForStatus(currentStatus, anime.episodes || 0);
+
+      const { error } = await supabase
+        .from('user_list_animes')
+        .update({
+          status: currentStatus || 'planned',
+          episodes_watched: eps,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('list_id', trackingListId)
+        .eq('anime_id', anime.id);
 
       if (error) throw error;
-
-      setIsInLists(false);
-      setShowListSelector(false);
-      fetchUserLists();
-      
+      setEpisodesWatched(eps);
+      setTrackingDirty(false);
     } catch (err: any) {
-      console.error('Error al eliminar de lista:', err);
-      alert('Error al eliminar: ' + err.message);
+      console.error('Error al guardar seguimiento:', err);
+      alert('Error: ' + err.message);
+    } finally {
+      setSavingTracking(false);
     }
   };
 
   // ───────────────────────────────────────────────────────────────────────────
-  // FUNCIÓN: Callback después de login exitoso
+  // FUNCIÓN: Me gusta
   // ───────────────────────────────────────────────────────────────────────────
+  const getOrCreateLikeList = async (): Promise<string | null> => {
+    if (!userId) return null;
+    const { data: existing } = await supabase
+      .from('user_lists').select('id').eq('user_id', userId).eq('name', 'Me gusta').maybeSingle();
+    if (existing?.id) return existing.id;
+    const { data: created, error } = await supabase
+      .from('user_lists')
+      .insert({ user_id: userId, name: 'Me gusta', type: 'system', color: '#ec4899', icon: 'heart', is_public: false })
+      .select('id').single();
+    if (error) return null;
+    return created?.id || null;
+  };
+
+  const handleLike = async () => {
+    if (!isLoggedIn) { setShowLoginModal(true); return; }
+    if (!anime || likingAnime) return;
+    setLikingAnime(true);
+    try {
+      const listId = likeListId || await getOrCreateLikeList();
+      if (!listId) return;
+      setLikeListId(listId);
+      if (isLiked) {
+        await supabase.rpc('remove_anime_from_list', { p_list_id: listId, p_anime_id: anime.id });
+        setIsLiked(false);
+      } else {
+        await supabase.rpc('add_anime_to_list', { p_list_id: listId, p_anime_id: anime.id, p_status: 'completed' });
+        setIsLiked(true);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLikingAnime(false);
+    }
+  };
+
+  // ───────────────────────────────────────────────────────────────────────────
+  // FUNCIÓN: Compartir
+  // ───────────────────────────────────────────────────────────────────────────
+  const handleShare = async () => {
+    try { await navigator.clipboard.writeText(window.location.href); }
+    catch {
+      const el = document.createElement('textarea');
+      el.value = window.location.href;
+      document.body.appendChild(el); el.select();
+      document.execCommand('copy'); document.body.removeChild(el);
+    }
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2500);
+  };
+
   const handleLoginSuccess = () => {
     setIsLoggedIn(true);
     setShowLoginModal(false);
-    setShowListSelector(true); // Abrir selector después de login
+    setShowListSelector(true);
   };
 
   // ───────────────────────────────────────────────────────────────────────────
-  // RENDER: Loading
+  // RENDERS DE ESTADO
   // ───────────────────────────────────────────────────────────────────────────
-  if (loading) {
-    return (
-      <div className="anime-detail-page">
-        <div className="anime-detail-loading">
-          <div className="loading-spinner" />
-          <p>Cargando información del anime...</p>
-        </div>
+  if (loading) return (
+    <div className="anime-detail-page">
+      <div className="anime-detail-loading">
+        <div className="loading-spinner" />
+        <p>Cargando información del anime...</p>
       </div>
-    );
-  }
+    </div>
+  );
+
+  if (error || !anime) return (
+    <div className="anime-detail-page">
+      <div className="anime-detail-error">
+        <h1>❌ Error</h1>
+        <p>{error || 'Anime no encontrado'}</p>
+        <button onClick={() => navigate('/catalogo')}>Volver al Catálogo</button>
+      </div>
+    </div>
+  );
+
+  // Episodios a mostrar según estado actual (para el input)
+  const showEpisodesInput = currentStatus === 'watching' || currentStatus === 'dropped';
 
   // ───────────────────────────────────────────────────────────────────────────
-  // RENDER: Error
-  // ───────────────────────────────────────────────────────────────────────────
-  if (error || !anime) {
-    return (
-      <div className="anime-detail-page">
-        <div className="anime-detail-error">
-          <h1>❌ Error</h1>
-          <p>{error || 'Anime no encontrado'}</p>
-          <button onClick={() => navigate('/catalogo')}>
-            Volver al Catálogo
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  // ───────────────────────────────────────────────────────────────────────────
-  // RENDER: Página Principal
+  // RENDER PRINCIPAL
   // ───────────────────────────────────────────────────────────────────────────
   return (
     <div className="anime-detail-page">
-      
-      {/* ─────────────────────────────────────────────────────────────────────
-          HERO SECTION - Banner principal
-          ───────────────────────────────────────────────────────────────────── */}
+
+      {/* HERO */}
       <div className="anime-detail-hero">
         <div className="anime-detail-hero__background">
           <img src={anime.image} alt={anime.title} />
@@ -309,179 +373,213 @@ export default function AnimeDetail() {
               <span className="badge badge--type">{anime.type}</span>
               <span className="badge badge--status">{anime.status}</span>
               <span className="badge badge--rating">
-                <Star size={14} fill="#e63946" stroke="#e63946" />
-                {anime.rating}
+                <Star size={14} fill="#e63946" stroke="#e63946" />{anime.rating}
               </span>
             </div>
 
             <h1 className="anime-detail-hero__title">{anime.title}</h1>
 
             <div className="anime-detail-hero__meta">
-              <span>
-                <Calendar size={16} />
-                {anime.year}
-              </span>
-              <span>
-                <Clock size={16} />
-                {anime.episodes} episodios
-              </span>
-              {anime.studios?.length > 0 && (
-                <span>
-                  <Play size={16} />
-                  {anime.studios[0]}
-                </span>
-              )}
+              <span><Calendar size={16} />{anime.year}</span>
+              <span><Clock size={16} />{anime.episodes} episodios</span>
+              {anime.studios?.length > 0 && <span><Play size={16} />{anime.studios[0]}</span>}
             </div>
 
             <div className="anime-detail-hero__genres">
-              {anime.genres.map(genre => (
-                <span key={genre} className="genre-pill">{genre}</span>
-              ))}
+              {anime.genres.map(g => <span key={g} className="genre-pill">{g}</span>)}
             </div>
 
-            {/* Botones de acción */}
+            {/* ── BOTONES PRINCIPALES ── */}
             <div className="anime-detail-hero__actions">
               <button className="btn btn--primary">
-                <Play size={20} />
-                Ver Trailer
+                <Play size={20} />Ver Trailer
               </button>
 
-              {/* Botón Añadir a Lista */}
+              {/* Añadir a lista */}
               <div className="btn-group">
-                <button 
+                <button
                   className={`btn btn--secondary ${isInLists ? 'active' : ''}`}
-                  onClick={handleAddToListClick}
+                  onClick={() => !isLoggedIn ? setShowLoginModal(true) : setShowListSelector(!showListSelector)}
                 >
-                  {isInLists ? (
-                    <>
-                      <Check size={20} />
-                      En Lista
-                    </>
-                  ) : (
-                    <>
-                      <Plus size={20} />
-                      Añadir a Lista
-                    </>
-                  )}
+                  {isInLists ? <><Check size={20} />En Lista</> : <><Plus size={20} />Añadir a Lista</>}
                 </button>
 
                 {showListSelector && isLoggedIn && (
                   <div className="list-selector">
-                    <select
-                      value={selectedList}
-                      onChange={(e) => setSelectedList(e.target.value)}
-                      className="list-selector__select"
-                    >
-                      {userLists.map(list => (
-                        <option key={list.id} value={list.id}>
-                          {list.name} ({list.anime_count})
-                        </option>
-                      ))}
-                    </select>
-                    
-                    <div className="list-selector__actions">
-                      <button 
-                        className="btn btn--small btn--primary"
-                        onClick={handleAddToList}
-                        disabled={addingToList}
-                      >
-                        {addingToList ? 'Añadiendo...' : 'Añadir'}
-                      </button>
-                      
-                      {isInLists && (
-                        <button 
-                          className="btn btn--small btn--danger"
-                          onClick={handleRemoveFromLists}
+                    {userLists
+                      .filter(l => l.name !== 'Me gusta')
+                      .map(list => (
+                        <label
+                          key={list.id}
+                          className={`list-checkbox-item ${togglingList === list.id ? 'loading' : ''}`}
+                          style={{ borderLeft: `3px solid ${list.color}` }}
                         >
-                          Eliminar
-                        </button>
-                      )}
-                    </div>
+                          <input
+                            type="checkbox"
+                            checked={animeInListIds.includes(list.id)}
+                            disabled={togglingList === list.id}
+                            onChange={() => handleToggleList(list.id)}
+                          />
+                          <span className="list-checkbox-item__name">{list.name}</span>
+                          <span className="list-checkbox-item__count">{list.anime_count}</span>
+                        </label>
+                      ))
+                    }
                   </div>
                 )}
               </div>
 
-              <button className="btn btn--icon">
-                <Heart size={20} />
+              {/* Me gusta */}
+              <button
+                className={`btn btn--icon ${isLiked ? 'btn--liked' : ''}`}
+                onClick={handleLike}
+                disabled={likingAnime}
+                title={isLiked ? 'Quitar de Me gusta' : 'Me gusta'}
+              >
+                <Heart size={20} fill={isLiked ? '#ec4899' : 'none'} stroke={isLiked ? '#ec4899' : 'currentColor'} />
               </button>
 
-              <button className="btn btn--icon">
-                <Share2 size={20} />
-              </button>
+              {/* Compartir */}
+              <div style={{ position: 'relative' }}>
+                <button className="btn btn--icon" onClick={handleShare} title="Compartir">
+                  <Share2 size={20} />
+                </button>
+                {copied && <div className="copied-tooltip">¡Enlace copiado!</div>}
+              </div>
             </div>
+
+            {/* ── PANEL DE SEGUIMIENTO ── */}
+            {isLoggedIn && isInLists && (
+              <div className="tracking-panel">
+                <div className="tracking-panel__header">
+                  <BookOpen size={16} />
+                  <span>Mi seguimiento</span>
+                </div>
+
+                {/* Botones de estado */}
+                <div className="tracking-status-row">
+                  {STATUS_OPTIONS.map(opt => (
+                    <button
+                      key={opt.value}
+                      className={`status-btn ${currentStatus === opt.value ? 'active' : ''}`}
+                      style={{ '--status-color': opt.color } as any}
+                      onClick={() => {
+                        setCurrentStatus(opt.value);
+                        // Ajustar episodios automáticamente según estado
+                        if (opt.value === 'completed') setEpisodesWatched(anime.episodes || 0);
+                        if (opt.value === 'planned') setEpisodesWatched(0);
+                        setTrackingDirty(true);
+                      }}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Input de episodios — solo visible en "Viendo" o "Abandonado" */}
+                {showEpisodesInput && (
+                  <div className="tracking-episodes-row">
+                    <label className="tracking-episodes-label">
+                      <Clock size={14} />
+                      Episodios vistos
+                    </label>
+                    <div className="tracking-episodes-input">
+                      <button
+                        className="ep-btn"
+                        onClick={() => {
+                          setEpisodesWatched(Math.max(0, episodesWatched - 1));
+                          setTrackingDirty(true);
+                        }}
+                      >−</button>
+                      <input
+                        type="number"
+                        min={0}
+                        max={anime.episodes || 9999}
+                        value={episodesWatched}
+                        onChange={(e) => {
+                          const v = Math.max(0, Math.min(anime.episodes || 9999, parseInt(e.target.value) || 0));
+                          setEpisodesWatched(v);
+                          setTrackingDirty(true);
+                        }}
+                      />
+                      <span className="ep-total">/ {anime.episodes || '?'}</span>
+                      <button
+                        className="ep-btn"
+                        onClick={() => {
+                          setEpisodesWatched(Math.min(anime.episodes || 9999, episodesWatched + 1));
+                          setTrackingDirty(true);
+                        }}
+                      >+</button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Info episodios para estados fijos */}
+                {!showEpisodesInput && currentStatus && (
+                  <div className="tracking-episodes-info">
+                    <Clock size={14} />
+                    <span>
+                      {currentStatus === 'completed'
+                        ? `${anime.episodes || 0} / ${anime.episodes || 0} episodios`
+                        : `0 / ${anime.episodes || 0} episodios`}
+                    </span>
+                  </div>
+                )}
+
+                {/* Botón guardar */}
+                {trackingDirty && (
+                  <button
+                    className="tracking-save-btn"
+                    onClick={handleSaveTracking}
+                    disabled={savingTracking}
+                  >
+                    {savingTracking ? 'Guardando...' : '✓ Guardar cambios'}
+                  </button>
+                )}
+              </div>
+            )}
+
           </div>
         </div>
       </div>
 
-      {/* ─────────────────────────────────────────────────────────────────────
-          CONTENIDO PRINCIPAL
-          ───────────────────────────────────────────────────────────────────── */}
+      {/* CONTENIDO */}
       <div className="anime-detail-content">
-        
-        {/* Sinopsis */}
         <section className="anime-detail-section">
           <h2 className="section-title">Sinopsis</h2>
           <p className="anime-detail-synopsis">{anime.synopsis}</p>
         </section>
 
-        {/* Información adicional */}
         <section className="anime-detail-section">
           <h2 className="section-title">Información</h2>
           <div className="anime-detail-info-grid">
-            <div className="info-item">
-              <span className="info-label">Tipo</span>
-              <span className="info-value">{anime.type}</span>
-            </div>
-            <div className="info-item">
-              <span className="info-label">Estado</span>
-              <span className="info-value">{anime.status}</span>
-            </div>
-            <div className="info-item">
-              <span className="info-label">Año</span>
-              <span className="info-value">{anime.year}</span>
-            </div>
-            <div className="info-item">
-              <span className="info-label">Episodios</span>
-              <span className="info-value">{anime.episodes}</span>
-            </div>
-            <div className="info-item">
-              <span className="info-label">Rating</span>
-              <span className="info-value">{anime.rating} ⭐</span>
-            </div>
-            <div className="info-item">
-              <span className="info-label">Popularidad</span>
-              <span className="info-value">#{anime.popularity}</span>
-            </div>
+            <div className="info-item"><span className="info-label">Tipo</span><span className="info-value">{anime.type}</span></div>
+            <div className="info-item"><span className="info-label">Estado</span><span className="info-value">{anime.status}</span></div>
+            <div className="info-item"><span className="info-label">Año</span><span className="info-value">{anime.year}</span></div>
+            <div className="info-item"><span className="info-label">Episodios</span><span className="info-value">{anime.episodes}</span></div>
+            <div className="info-item"><span className="info-label">Rating</span><span className="info-value">{anime.rating} ⭐</span></div>
+            <div className="info-item"><span className="info-label">Popularidad</span><span className="info-value">#{anime.popularity}</span></div>
           </div>
         </section>
 
-        {/* Géneros */}
         <section className="anime-detail-section">
           <h2 className="section-title">Géneros</h2>
           <div className="anime-detail-genres">
-            {anime.genres.map(genre => (
-              <span key={genre} className="genre-tag">{genre}</span>
-            ))}
+            {anime.genres.map(g => <span key={g} className="genre-tag">{g}</span>)}
           </div>
         </section>
 
-        {/* Estudios */}
         {anime.studios?.length > 0 && (
           <section className="anime-detail-section">
             <h2 className="section-title">Estudios</h2>
             <div className="anime-detail-studios">
-              {anime.studios.map(studio => (
-                <span key={studio} className="studio-tag">{studio}</span>
-              ))}
+              {anime.studios.map(s => <span key={s} className="studio-tag">{s}</span>)}
             </div>
           </section>
         )}
       </div>
 
-      {/* ─────────────────────────────────────────────────────────────────────
-          LOGIN MODAL - Se muestra cuando no está logueado
-          ───────────────────────────────────────────────────────────────────── */}
-      <LoginModal 
+      <LoginModal
         isOpen={showLoginModal}
         onClose={() => setShowLoginModal(false)}
         title="Accede a Mis Listas"

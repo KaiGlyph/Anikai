@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { getRecommendations, Anime } from '../../lib/recommendations';
 import { supabase } from '../../lib/supabaseClient';
 import { Star, TrendingUp, Sparkles } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import './Recommendations.css';
 
 export default function Recommendations() {
@@ -24,6 +25,8 @@ export default function Recommendations() {
       loadRecommendations();
     }
   }, [userId]);
+
+  const navigate = useNavigate();
 
   const loadRecommendations = async () => {
     setLoading(true);
@@ -62,7 +65,12 @@ export default function Recommendations() {
 
       <div className="recommendations-grid">
         {recommendations.map((anime) => (
-          <div key={anime.id} className="recommendation-card">
+        <div 
+          key={anime.id} 
+          className="recommendation-card"
+          onClick={() => navigate(`/anime/${anime.id}`)}
+          style={{ cursor: 'pointer' }}
+        >
             <div className="recommendation-card__image">
               <img src={anime.image} alt={anime.title} />
               <div className="recommendation-card__rating">

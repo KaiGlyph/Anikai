@@ -53,15 +53,15 @@ export default function Header() {
     checkSession();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
+      (event, session) => {
         if (!session) {
           setIsLoggedIn(false);
           setUserEmail(null);
           setUserName(null);
           setIsLoggingOut(false);
-        } else {
+        } else if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || event === 'INITIAL_SESSION') {
           setIsLoggedIn(true);
-          await loadUserProfile(session.user.id, session.user.email || '');
+          loadUserProfile(session.user.id, session.user.email || '');
         }
       }
     );

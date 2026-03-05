@@ -80,12 +80,19 @@ export default function Lists() {
   // EFECTO: Verificar autenticación
   // ───────────────────────────────────────────────────────────────────────────
   useEffect(() => {
-    const checkAuth = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
+    // Carga inicial
+    supabase.auth.getSession().then(({ data: { session } }) => {
       setIsLoggedIn(!!session);
       setUserId(session?.user?.id || null);
-    };
-    checkAuth();
+    });
+
+    // Escucha cambios (login, logout, refresco de token)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsLoggedIn(!!session);
+      setUserId(session?.user?.id || null);
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
   // ───────────────────────────────────────────────────────────────────────────
@@ -142,12 +149,12 @@ export default function Lists() {
           score,
           episodes_watched,
           added_at,
-          animes:anime_id (
-            id,
-            title,
-            image,
-            episodes
-          )
+          animes (
+          id,
+          title,
+          image,
+          episodes
+        )
         `)
         .eq('list_id', listId)
         .order('added_at', { ascending: false });
