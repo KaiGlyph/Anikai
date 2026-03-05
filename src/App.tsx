@@ -7,6 +7,8 @@ import Footer from './components/layout/footer/footer'
 import Home from './pages/Home/Home'
 import Recommendations from './pages/Recomendations/Recomendations'
 import Catalog from './pages/Catalog/Catalog'
+import AnimeDetail from './pages/AnimeDetail/AnimeDetail' // ← IMPORTAR
+import Lists from './pages/Lists/Lists'
 
 // Páginas de Autenticación
 import Login from './pages/Auth/Login'
@@ -40,6 +42,8 @@ export default function App() {
             <Route path="/" element={<Home />} />
             <Route path="/recomendaciones" element={<Recommendations />} />
             <Route path="/catalogo" element={<Catalog />} />
+            <Route path="/anime/:id" element={<AnimeDetail />} /> {/* ← AÑADIR ESTA */}
+            <Route path="/listas" element={<Lists />} />
             
             {/* Páginas de Autenticación */}
             <Route path="/login" element={<Login />} />

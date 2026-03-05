@@ -393,4 +393,32 @@ export default function Catalog() {
       )}
     </div>
   );
+
+    // Al inicio del useEffect de fetchAnimes
+  useEffect(() => {
+    const debugConnection = async () => {
+      console.log('🔍 Debug móvil:');
+      console.log('URL:', import.meta.env.VITE_SUPABASE_URL);
+      console.log('Key definida:', !!import.meta.env.VITE_SUPABASE_ANON_KEY);
+      
+      try {
+        const { data, error } = await supabase
+          .from('animes')
+          .select('id')
+          .limit(1);
+        
+        if (error) {
+          console.error('❌ Error Supabase:', error);
+          setError('Error de conexión: ' + error.message);
+        } else {
+          console.log('✅ Conexión exitosa, animes:', data?.length);
+        }
+      } catch (e: any) {
+        console.error('❌ Excepción:', e);
+        setError('Excepción: ' + e.message);
+      }
+    };
+    
+    debugConnection();
+  }, []);
 }
