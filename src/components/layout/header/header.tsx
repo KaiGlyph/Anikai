@@ -13,6 +13,7 @@ export default function Header() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [userName, setUserName] = useState<string | null>(null);
+  const [userAvatar, setUserAvatar] = useState<string | null>(null);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const location = useLocation();
   const userMenuRef = useRef<HTMLDivElement>(null);
@@ -28,12 +29,14 @@ export default function Header() {
     try {
       const { data: profile } = await supabase
         .from('profiles')
-        .select('username')
+        .select('username, avatar_url')
         .eq('id', userId)
         .single();
       setUserName(profile?.username || email.split('@')[0]);
+      setUserAvatar(profile?.avatar_url || null);
     } catch {
       setUserName(email.split('@')[0]);
+      setUserAvatar(null);
     }
   };
 
@@ -47,6 +50,7 @@ export default function Header() {
         setIsLoggedIn(false);
         setUserEmail(null);
         setUserName(null);
+        setUserAvatar(null);
       }
     };
 
@@ -58,6 +62,7 @@ export default function Header() {
           setIsLoggedIn(false);
           setUserEmail(null);
           setUserName(null);
+          setUserAvatar(null);
           setIsLoggingOut(false);
         } else if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || event === 'INITIAL_SESSION') {
           setIsLoggedIn(true);
@@ -88,8 +93,6 @@ export default function Header() {
     document.body.classList.toggle('menu-open', isMenuOpen);
   }, [isMenuOpen]);
 
-  // ─── LOGOUT CON TIMEOUT DE SEGURIDAD ───────────────────────────────────────
-  // Si supabase.auth.signOut() no responde en 3s, cerramos sesión de todas formas
   const handleLogout = async () => {
     if (isLoggingOut) return;
 
@@ -98,13 +101,13 @@ export default function Header() {
     setIsMenuOpen(false);
 
     const forceLogout = () => {
-      // Limpiar claves de Supabase del localStorage manualmente
       Object.keys(localStorage).forEach(key => {
         if (key.startsWith('sb-')) localStorage.removeItem(key);
       });
       setIsLoggedIn(false);
       setUserEmail(null);
       setUserName(null);
+      setUserAvatar(null);
       setIsLoggingOut(false);
     };
 
@@ -122,7 +125,27 @@ export default function Header() {
       forceLogout();
     }
   };
-  // ───────────────────────────────────────────────────────────────────────────
+
+  // ── Componente avatar reutilizable ─────────────────────────────────────────
+  const AvatarIcon = ({ size = 20 }: { size?: number }) => {
+    if (userAvatar) {
+      return (
+        <img
+          src={userAvatar}
+          alt={userName || 'Avatar'}
+          style={{
+            width: size + 12,
+            height: size + 12,
+            borderRadius: '50%',
+            objectFit: 'cover',
+            display: 'block',
+          }}
+          onError={() => setUserAvatar(null)}
+        />
+      );
+    }
+    return <User size={size} />;
+  };
 
   return (
     <>
@@ -147,7 +170,9 @@ export default function Header() {
               onMouseLeave={() => setIsUserMenuOpen(false)}
             >
               <button className="user-menu__trigger">
-                <div className="user-menu__avatar"><User size={20} /></div>
+                <div className={`user-menu__avatar ${userAvatar ? 'user-menu__avatar--photo' : ''}`}>
+                  <AvatarIcon size={20} />
+                </div>
                 <ChevronDown size={16} className={`user-menu__arrow ${isUserMenuOpen ? 'rotated' : ''}`} />
               </button>
 
@@ -155,7 +180,9 @@ export default function Header() {
                 {isLoggedIn ? (
                   <>
                     <div className="user-menu__header">
-                      <div className="user-menu__user-avatar"><User size={32} /></div>
+                      <div className={`user-menu__user-avatar ${userAvatar ? 'user-menu__user-avatar--photo' : ''}`}>
+                        <AvatarIcon size={32} />
+                      </div>
                       <div className="user-menu__user-info">
                         <span className="user-menu__username">{userName || 'Usuario'}</span>
                         <span className="user-menu__email">{userEmail}</span>
@@ -213,7 +240,9 @@ export default function Header() {
           <div className="mobileMenu__content" onClick={e => e.stopPropagation()}>
             
             <div className="mobileMenu__user-section">
-              <div className="mobileMenu__user-avatar"><User size={32} /></div>
+              <div className={`mobileMenu__user-avatar ${userAvatar ? 'mobileMenu__user-avatar--photo' : ''}`}>
+                <AvatarIcon size={32} />
+              </div>
               {isLoggedIn ? (
                 <div className="mobileMenu__user-info">
                   <span className="mobileMenu__username">{userName || 'Usuario'}</span>

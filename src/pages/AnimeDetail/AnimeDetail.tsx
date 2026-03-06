@@ -79,6 +79,8 @@ export default function AnimeDetail() {
   const [trackingListId, setTrackingListId] = useState<string | null>(null);
   const [currentStatus, setCurrentStatus] = useState<WatchStatus>('');
   const [episodesWatched, setEpisodesWatched] = useState<number>(0);
+  const [userScore, setUserScore] = useState<number>(0); // 0 = sin puntuar
+  const [hoveredScore, setHoveredScore] = useState<number>(0);
   const [savingTracking, setSavingTracking] = useState(false);
   const [trackingDirty, setTrackingDirty] = useState(false);
 
@@ -135,9 +137,6 @@ export default function AnimeDetail() {
 
   // ───────────────────────────────────────────────────────────────────────────
   // FUNCIÓN: Episodios según estado
-  // — completed → total episodios del anime
-  // — planned   → 0
-  // — watching / dropped → el valor manual del usuario
   // ───────────────────────────────────────────────────────────────────────────
   const getEpisodesForStatus = (status: WatchStatus, totalEps: number): number => {
     if (status === 'completed') return totalEps;
@@ -173,14 +172,14 @@ export default function AnimeDetail() {
   };
 
   // ───────────────────────────────────────────────────────────────────────────
-  // FUNCIÓN: Verificar en qué listas está + cargar seguimiento
+  // FUNCIÓN: Verificar en qué listas está + cargar seguimiento + score
   // ───────────────────────────────────────────────────────────────────────────
   const checkIfInLists = async () => {
     if (!userId || !id) return;
     try {
       const { data } = await supabase
         .from('user_list_animes')
-        .select('list_id, status, episodes_watched')
+        .select('list_id, status, episodes_watched, score')
         .eq('anime_id', id);
 
       const listIds = data?.map((d: any) => d.list_id) || [];
@@ -192,6 +191,7 @@ export default function AnimeDetail() {
         setTrackingListId(first.list_id);
         setCurrentStatus(first.status || '');
         setEpisodesWatched(first.episodes_watched || 0);
+        setUserScore(first.score || 0);
       }
     } catch (err) {
       console.error('Error al verificar listas:', err);
@@ -215,6 +215,7 @@ export default function AnimeDetail() {
           setTrackingListId(null);
           setCurrentStatus('');
           setEpisodesWatched(0);
+          setUserScore(0);
         }
       } else {
         await supabase.rpc('add_anime_to_list', { p_list_id: listId, p_anime_id: anime.id, p_status: 'planned' });
@@ -225,6 +226,7 @@ export default function AnimeDetail() {
           setTrackingListId(listId);
           setCurrentStatus('planned');
           setEpisodesWatched(0);
+          setUserScore(0);
         }
       }
       fetchUserLists();
@@ -236,7 +238,7 @@ export default function AnimeDetail() {
   };
 
   // ───────────────────────────────────────────────────────────────────────────
-  // FUNCIÓN: Guardar seguimiento
+  // FUNCIÓN: Guardar seguimiento (incluye score)
   // ───────────────────────────────────────────────────────────────────────────
   const handleSaveTracking = async () => {
     if (!trackingListId || !anime || !userId) return;
@@ -250,6 +252,7 @@ export default function AnimeDetail() {
         .update({
           status: currentStatus || 'planned',
           episodes_watched: eps,
+          score: userScore,
           updated_at: new Date().toISOString(),
         })
         .eq('list_id', trackingListId)
@@ -347,8 +350,9 @@ export default function AnimeDetail() {
     </div>
   );
 
-  // Episodios a mostrar según estado actual (para el input)
   const showEpisodesInput = currentStatus === 'watching' || currentStatus === 'dropped';
+  // Puntuación a mostrar (hover tiene prioridad sobre la guardada)
+  const displayScore = hoveredScore || userScore;
 
   // ───────────────────────────────────────────────────────────────────────────
   // RENDER PRINCIPAL
@@ -375,6 +379,13 @@ export default function AnimeDetail() {
               <span className="badge badge--rating">
                 <Star size={14} fill="#e63946" stroke="#e63946" />{anime.rating}
               </span>
+              {/* Puntuación del usuario visible siempre que esté puntuado */}
+              {isLoggedIn && isInLists && userScore > 0 && (
+                <span className="badge badge--user-score">
+                  <Star size={14} fill="#f4a261" stroke="#f4a261" />
+                  Mi nota: {userScore}
+                </span>
+              )}
             </div>
 
             <h1 className="anime-detail-hero__title">{anime.title}</h1>
@@ -465,7 +476,6 @@ export default function AnimeDetail() {
                       style={{ '--status-color': opt.color } as any}
                       onClick={() => {
                         setCurrentStatus(opt.value);
-                        // Ajustar episodios automáticamente según estado
                         if (opt.value === 'completed') setEpisodesWatched(anime.episodes || 0);
                         if (opt.value === 'planned') setEpisodesWatched(0);
                         setTrackingDirty(true);
@@ -476,7 +486,7 @@ export default function AnimeDetail() {
                   ))}
                 </div>
 
-                {/* Input de episodios — solo visible en "Viendo" o "Abandonado" */}
+                {/* Input de episodios */}
                 {showEpisodesInput && (
                   <div className="tracking-episodes-row">
                     <label className="tracking-episodes-label">
@@ -484,13 +494,7 @@ export default function AnimeDetail() {
                       Episodios vistos
                     </label>
                     <div className="tracking-episodes-input">
-                      <button
-                        className="ep-btn"
-                        onClick={() => {
-                          setEpisodesWatched(Math.max(0, episodesWatched - 1));
-                          setTrackingDirty(true);
-                        }}
-                      >−</button>
+                      <button className="ep-btn" onClick={() => { setEpisodesWatched(Math.max(0, episodesWatched - 1)); setTrackingDirty(true); }}>−</button>
                       <input
                         type="number"
                         min={0}
@@ -503,18 +507,12 @@ export default function AnimeDetail() {
                         }}
                       />
                       <span className="ep-total">/ {anime.episodes || '?'}</span>
-                      <button
-                        className="ep-btn"
-                        onClick={() => {
-                          setEpisodesWatched(Math.min(anime.episodes || 9999, episodesWatched + 1));
-                          setTrackingDirty(true);
-                        }}
-                      >+</button>
+                      <button className="ep-btn" onClick={() => { setEpisodesWatched(Math.min(anime.episodes || 9999, episodesWatched + 1)); setTrackingDirty(true); }}>+</button>
                     </div>
                   </div>
                 )}
 
-                {/* Info episodios para estados fijos */}
+                {/* Info episodios fijos */}
                 {!showEpisodesInput && currentStatus && (
                   <div className="tracking-episodes-info">
                     <Clock size={14} />
@@ -525,6 +523,40 @@ export default function AnimeDetail() {
                     </span>
                   </div>
                 )}
+
+                {/* ── PUNTUACIÓN ── */}
+                <div className="tracking-score-row">
+                  <label className="tracking-episodes-label">
+                    <Star size={14} />
+                    Mi puntuación
+                  </label>
+                  <div className="tracking-score-stars">
+                    {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(n => (
+                      <button
+                        key={n}
+                        className="score-star-btn"
+                        onMouseEnter={() => setHoveredScore(n)}
+                        onMouseLeave={() => setHoveredScore(0)}
+                        onClick={() => {
+                          // Si clica la misma nota, la quita (toggle)
+                          const newScore = userScore === n ? 0 : n;
+                          setUserScore(newScore);
+                          setTrackingDirty(true);
+                        }}
+                        title={`${n}/10`}
+                      >
+                        <Star
+                          size={18}
+                          fill={n <= displayScore ? '#f4a261' : 'none'}
+                          stroke={n <= displayScore ? '#f4a261' : 'rgba(255,255,255,0.3)'}
+                        />
+                      </button>
+                    ))}
+                    <span className="score-value">
+                      {displayScore > 0 ? `${displayScore}/10` : '—'}
+                    </span>
+                  </div>
+                </div>
 
                 {/* Botón guardar */}
                 {trackingDirty && (

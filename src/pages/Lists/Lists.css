@@ -654,6 +654,44 @@
   border-top: 1px solid var(--glass-border);
 }
 
+/* Botón editar inline en list-card */
+.list-card__edit-btn {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 0.2rem;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.2s ease, color 0.2s ease;
+  margin-left: auto;
+}
+
+.list-card:hover .list-card__edit-btn {
+  opacity: 1;
+}
+
+.list-card__edit-btn:hover {
+  color: #e63946;
+}
+
+/* Preview de color en el modal */
+.color-preview {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  padding: 0.4rem 0.8rem;
+  border: 1px solid;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  background: rgba(255,255,255,0.03);
+  transition: all 0.2s ease;
+}
+
 /* ───────────────────────────────────────────────────────────────────────────
    BOTONES
    ─────────────────────────────────────────────────────────────────────────── */

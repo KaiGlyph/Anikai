@@ -564,6 +564,41 @@
   background: rgba(230, 57, 70, 0.15);
 }
 
+/* Avatar con foto en el trigger */
+.user-menu__avatar--photo {
+  background: transparent;
+  border: 2px solid rgba(230, 57, 70, 0.5);
+  padding: 0;
+  overflow: hidden;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Avatar con foto en el dropdown */
+.user-menu__user-avatar--photo {
+  background: transparent;
+  border: 2px solid rgba(230, 57, 70, 0.4);
+  padding: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Avatar con foto en menú móvil */
+.mobileMenu__user-avatar--photo {
+  background: transparent;
+  border: 2px solid rgba(230, 57, 70, 0.5);
+  padding: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 /* ============================================
    MOBILE MENU - SECCIONES MEJORADAS
    ============================================ */

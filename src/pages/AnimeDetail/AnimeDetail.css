@@ -644,6 +644,52 @@
   color: var(--text-secondary);
 }
 
+/* ── Puntuación ── */
+.tracking-score-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.tracking-score-stars {
+  display: flex;
+  align-items: center;
+  gap: 0.15rem;
+}
+
+.score-star-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.1rem;
+  transition: transform 0.15s ease;
+  display: flex;
+  align-items: center;
+}
+
+.score-star-btn:hover {
+  transform: scale(1.2);
+}
+
+.score-value {
+  margin-left: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #f4a261;
+  min-width: 36px;
+}
+
+/* Badge puntuación usuario en los badges del hero */
+.badge--user-score {
+  background: rgba(244, 162, 97, 0.15);
+  border: 1px solid rgba(244, 162, 97, 0.4);
+  color: #f4a261;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
 /* ───────────────────────────────────────────────────────────────────────────
    RESPONSIVE
    ─────────────────────────────────────────────────────────────────────────── */
