@@ -1,12 +1,15 @@
 // src/components/layout/header/Header.tsx
 import { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { User, LogIn, UserPlus, Settings, LogOut, ChevronDown } from 'lucide-react';
 import { supabase } from '../../../lib/supabaseClient';
 import logoNormal from "@/assets/images/Anikai_Logo.png";
 import './Header.css';
 
 export default function Header() {
+  const { t } = useTranslation();
+
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
@@ -95,7 +98,6 @@ export default function Header() {
 
   const handleLogout = async () => {
     if (isLoggingOut) return;
-
     setIsLoggingOut(true);
     setIsUserMenuOpen(false);
     setIsMenuOpen(false);
@@ -112,7 +114,7 @@ export default function Header() {
     };
 
     const timeoutId = setTimeout(() => {
-      console.warn('[LOGOUT] Timeout alcanzado — forzando cierre local');
+      console.warn('[LOGOUT] Timeout — forzando cierre local');
       forceLogout();
     }, 3000);
 
@@ -126,20 +128,13 @@ export default function Header() {
     }
   };
 
-  // ── Componente avatar reutilizable ─────────────────────────────────────────
   const AvatarIcon = ({ size = 20 }: { size?: number }) => {
     if (userAvatar) {
       return (
         <img
           src={userAvatar}
           alt={userName || 'Avatar'}
-          style={{
-            width: size + 12,
-            height: size + 12,
-            borderRadius: '50%',
-            objectFit: 'cover',
-            display: 'block',
-          }}
+          style={{ width: size + 12, height: size + 12, borderRadius: '50%', objectFit: 'cover', display: 'block' }}
           onError={() => setUserAvatar(null)}
         />
       );
@@ -151,19 +146,27 @@ export default function Header() {
     <>
       <header className={`header ${isScrolled ? 'scrolled' : ''}`}>
         <nav className="header__nav">
-          
+
           <Link to="/" className="header__logo">
             <img src={logoNormal} alt="Anikai" className="header__logo-img" />
             <span className="header__logo-text">Anikai</span>
           </Link>
 
           <nav className="desktopNav">
-            <Link to="/" className={`desktopNav__link ${location.pathname === '/' ? 'active' : ''}`}>Home</Link>
-            <Link to="/recomendaciones" className={`desktopNav__link ${location.pathname === '/recomendaciones' ? 'active' : ''}`}>Recomendaciones</Link>
-            <Link to="/catalogo" className={`desktopNav__link ${location.pathname === '/catalogo' ? 'active' : ''}`}>Catálogo</Link>
-            <Link to="/listas" className={`desktopNav__link ${location.pathname === '/listas' ? 'active' : ''}`}>Listas</Link>
-            
-            <div 
+            <Link to="/" className={`desktopNav__link ${location.pathname === '/' ? 'active' : ''}`}>
+              {t('nav.home')}
+            </Link>
+            <Link to="/recomendaciones" className={`desktopNav__link ${location.pathname === '/recomendaciones' ? 'active' : ''}`}>
+              {t('nav.recommendations')}
+            </Link>
+            <Link to="/catalogo" className={`desktopNav__link ${location.pathname === '/catalogo' ? 'active' : ''}`}>
+              {t('nav.catalog')}
+            </Link>
+            <Link to="/listas" className={`desktopNav__link ${location.pathname === '/listas' ? 'active' : ''}`}>
+              {t('nav.lists')}
+            </Link>
+
+            <div
               ref={userMenuRef}
               className="user-menu"
               onMouseEnter={() => setIsUserMenuOpen(true)}
@@ -184,40 +187,40 @@ export default function Header() {
                         <AvatarIcon size={32} />
                       </div>
                       <div className="user-menu__user-info">
-                        <span className="user-menu__username">{userName || 'Usuario'}</span>
+                        <span className="user-menu__username">{userName || t('nav.guest')}</span>
                         <span className="user-menu__email">{userEmail}</span>
                       </div>
                     </div>
                     <div className="user-menu__divider" />
                     <Link to="/perfil" className="user-menu__item">
-                      <User size={18} />Mi Perfil
+                      <User size={18} />{t('nav.profile')}
                     </Link>
                     <Link to="/configuracion" className="user-menu__item">
-                      <Settings size={18} />Configuración
+                      <Settings size={18} />{t('nav.settings')}
                     </Link>
                     <div className="user-menu__divider" />
-                    <button 
+                    <button
                       type="button"
                       className="user-menu__item user-menu__item--danger"
                       onClick={handleLogout}
                       disabled={isLoggingOut}
                     >
                       <LogOut size={18} />
-                      {isLoggingOut ? 'Cerrando...' : 'Cerrar Sesión'}
+                      {isLoggingOut ? t('nav.closing') : t('nav.logout')}
                     </button>
                   </>
                 ) : (
                   <>
                     <div className="user-menu__guest-header">
-                      <p>Accede a tu cuenta</p>
-                      <span>Para ver tus listas y recomendaciones</span>
+                      <p>{t('nav.login')}</p>
+                      <span>{t('lists.login_sub')}</span>
                     </div>
                     <div className="user-menu__divider" />
                     <Link to="/login" className="user-menu__item">
-                      <LogIn size={18} />Iniciar Sesión
+                      <LogIn size={18} />{t('nav.login')}
                     </Link>
                     <Link to="/registro" className="user-menu__item user-menu__item--primary">
-                      <UserPlus size={18} />Registrarse
+                      <UserPlus size={18} />{t('nav.register')}
                     </Link>
                   </>
                 )}
@@ -228,7 +231,7 @@ export default function Header() {
           <button
             className={`hamburgerButton ${isMenuOpen ? 'active' : ''}`}
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            aria-label="Menú"
+            aria-label={t('nav.navigation')}
           >
             <span></span><span></span><span></span>
           </button>
@@ -238,65 +241,73 @@ export default function Header() {
       {isMenuOpen && (
         <div className="mobileMenu" onClick={() => setIsMenuOpen(false)}>
           <div className="mobileMenu__content" onClick={e => e.stopPropagation()}>
-            
+
             <div className="mobileMenu__user-section">
               <div className={`mobileMenu__user-avatar ${userAvatar ? 'mobileMenu__user-avatar--photo' : ''}`}>
                 <AvatarIcon size={32} />
               </div>
               {isLoggedIn ? (
                 <div className="mobileMenu__user-info">
-                  <span className="mobileMenu__username">{userName || 'Usuario'}</span>
+                  <span className="mobileMenu__username">{userName || t('nav.guest')}</span>
                   <span className="mobileMenu__email">{userEmail}</span>
                 </div>
               ) : (
                 <div className="mobileMenu__guest-info">
-                  <span className="mobileMenu__guest-text">Invitado</span>
+                  <span className="mobileMenu__guest-text">{t('nav.guest')}</span>
                 </div>
               )}
             </div>
 
             <div className="mobileMenu__divider" />
-            
+
             <div className="mobileMenu__section">
-              <span className="mobileMenu__section-title">Navegación</span>
-              <Link to="/" className={`mobileMenu__link ${location.pathname === '/' ? 'active' : ''}`} onClick={() => setIsMenuOpen(false)}>Home</Link>
-              <Link to="/recomendaciones" className={`mobileMenu__link ${location.pathname === '/recomendaciones' ? 'active' : ''}`} onClick={() => setIsMenuOpen(false)}>Recomendaciones</Link>
-              <Link to="/catalogo" className={`mobileMenu__link ${location.pathname === '/catalogo' ? 'active' : ''}`} onClick={() => setIsMenuOpen(false)}>Catálogo</Link>
-              <Link to="/listas" className={`mobileMenu__link ${location.pathname === '/listas' ? 'active' : ''}`} onClick={() => setIsMenuOpen(false)}>Listas</Link>
+              <span className="mobileMenu__section-title">{t('nav.navigation')}</span>
+              <Link to="/" className={`mobileMenu__link ${location.pathname === '/' ? 'active' : ''}`} onClick={() => setIsMenuOpen(false)}>
+                {t('nav.home')}
+              </Link>
+              <Link to="/recomendaciones" className={`mobileMenu__link ${location.pathname === '/recomendaciones' ? 'active' : ''}`} onClick={() => setIsMenuOpen(false)}>
+                {t('nav.recommendations')}
+              </Link>
+              <Link to="/catalogo" className={`mobileMenu__link ${location.pathname === '/catalogo' ? 'active' : ''}`} onClick={() => setIsMenuOpen(false)}>
+                {t('nav.catalog')}
+              </Link>
+              <Link to="/listas" className={`mobileMenu__link ${location.pathname === '/listas' ? 'active' : ''}`} onClick={() => setIsMenuOpen(false)}>
+                {t('nav.lists')}
+              </Link>
             </div>
-            
+
             <div className="mobileMenu__divider" />
-            
+
             {isLoggedIn && (
               <div className="mobileMenu__section">
-                <span className="mobileMenu__section-title">Cuenta</span>
+                <span className="mobileMenu__section-title">{t('nav.account')}</span>
                 <Link to="/perfil" className="mobileMenu__link" onClick={() => setIsMenuOpen(false)}>
-                  <User size={18} />Mi Perfil
+                  <User size={18} />{t('nav.profile')}
                 </Link>
                 <Link to="/configuracion" className="mobileMenu__link" onClick={() => setIsMenuOpen(false)}>
-                  <Settings size={18} />Configuración
+                  <Settings size={18} />{t('nav.settings')}
                 </Link>
               </div>
             )}
-            
+
             <div className="mobileMenu__section">
               {isLoggedIn ? (
-                <button 
+                <button
                   type="button"
                   className="mobileMenu__button mobileMenu__button--danger"
                   onClick={handleLogout}
                   disabled={isLoggingOut}
                 >
                   <LogOut size={18} />
-                  {isLoggingOut ? 'Cerrando...' : 'Cerrar Sesión'}
+                  {isLoggingOut ? t('nav.closing') : t('nav.logout')}
                 </button>
               ) : (
                 <>
                   <Link to="/login" className="mobileMenu__button mobileMenu__button--secondary" onClick={() => setIsMenuOpen(false)}>
-                    <LogIn size={18} />Iniciar Sesión
+                    <LogIn size={18} />{t('nav.login')}
                   </Link>
                   <Link to="/registro" className="mobileMenu__button mobileMenu__button--primary" onClick={() => setIsMenuOpen(false)}>
-                    <UserPlus size={18} />Registrarse
+                    <UserPlus size={18} />{t('nav.register')}
                   </Link>
                 </>
               )}

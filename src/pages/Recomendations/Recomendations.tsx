@@ -1,5 +1,6 @@
 // src/pages/Recommendations/Recommendations.tsx
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { getRecommendations, Anime } from '../../lib/recommendations';
 import { supabase } from '../../lib/supabaseClient';
 import { Star, TrendingUp, Sparkles } from 'lucide-react';
@@ -7,12 +8,13 @@ import { useNavigate } from 'react-router-dom';
 import './Recommendations.css';
 
 export default function Recommendations() {
+  const { t } = useTranslation();
   const [recommendations, setRecommendations] = useState<Anime[]>([]);
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // Obtener usuario actual
     const getUser = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       setUserId(session?.user?.id || null);
@@ -21,12 +23,10 @@ export default function Recommendations() {
   }, []);
 
   useEffect(() => {
-    if (userId !== undefined) { // undefined = cargando, null = no logueado
+    if (userId !== undefined) {
       loadRecommendations();
     }
   }, [userId]);
-
-  const navigate = useNavigate();
 
   const loadRecommendations = async () => {
     setLoading(true);
@@ -44,7 +44,7 @@ export default function Recommendations() {
     return (
       <div className="recommendations-loading">
         <div className="loading-spinner" />
-        <p>Calculando recomendaciones...</p>
+        <p>{t('recommendations.loading')}</p>
       </div>
     );
   }
@@ -54,23 +54,19 @@ export default function Recommendations() {
       <div className="recommendations-header">
         <h1>
           <Sparkles size={32} />
-          Recomendaciones para Ti
+          {t('recommendations.title')}
         </h1>
-        <p>
-          {userId 
-            ? 'Basado en tus gustos y preferencias'
-            : 'Animes populares y trending'}
-        </p>
+        <p>{userId ? t('recommendations.subtitle_user') : t('recommendations.subtitle_guest')}</p>
       </div>
 
       <div className="recommendations-grid">
         {recommendations.map((anime) => (
-        <div 
-          key={anime.id} 
-          className="recommendation-card"
-          onClick={() => navigate(`/anime/${anime.id}`)}
-          style={{ cursor: 'pointer' }}
-        >
+          <div
+            key={anime.id}
+            className="recommendation-card"
+            onClick={() => navigate(`/anime/${anime.id}`)}
+            style={{ cursor: 'pointer' }}
+          >
             <div className="recommendation-card__image">
               <img src={anime.image} alt={anime.title} />
               <div className="recommendation-card__rating">
@@ -88,7 +84,7 @@ export default function Recommendations() {
               <div className="recommendation-card__meta">
                 <span>{anime.year}</span>
                 <span>•</span>
-                <span>{anime.genres.length} géneros</span>
+                <span>{anime.genres.length} {t('recommendations.genres')}</span>
               </div>
             </div>
           </div>
@@ -98,8 +94,8 @@ export default function Recommendations() {
       {recommendations.length === 0 && (
         <div className="no-recommendations">
           <TrendingUp size={48} />
-          <p>No hay recomendaciones disponibles</p>
-          <p className="subtitle">¡Explora el catálogo para personalizar!</p>
+          <p>{t('recommendations.empty')}</p>
+          <p className="subtitle">{t('recommendations.empty_sub')}</p>
         </div>
       )}
     </div>

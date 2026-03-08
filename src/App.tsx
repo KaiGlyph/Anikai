@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Header from './components/layout/header/header'
 import Footer from './components/layout/footer/footer'
 
+
 // Páginas Principales
 import Home from './pages/Home/Home'
 import Recommendations from './pages/Recomendations/Recomendations'
@@ -10,6 +11,9 @@ import Catalog from './pages/Catalog/Catalog'
 import AnimeDetail from './pages/AnimeDetail/AnimeDetail'
 import Lists from './pages/Lists/Lists'
 import Profile from './pages/Profile/Profile';
+
+// Traducciones
+import Settings from './pages/Settings/Settings'
 
 // Páginas de Autenticación
 import Login from './pages/Auth/Login'
@@ -47,6 +51,9 @@ export default function App() {
             <Route path="/listas" element={<Lists />} />
             <Route path="/perfil" element={<Profile />} />
             
+            {/* Traducciones */}
+            <Route path="/configuracion" element={<Settings />} />
+
             {/* Páginas de Autenticación */}
             <Route path="/login" element={<Login />} />
             <Route path="/registro" element={<Registro />} />

@@ -1,11 +1,9 @@
 // src/pages/Home/Home.tsx
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Play, Star, ArrowRight, Award, Flame, Calendar, Newspaper, ChevronLeft, ChevronRight } from 'lucide-react';
 
-// ─────────────────────────────────────────────────────────────────────────────
-// IMPORTACIÓN DE IMÁGENES
-// ─────────────────────────────────────────────────────────────────────────────
 import soloLeveling from '@/assets/images/animes/Ore-dake-Level-Up-na-Ken.jpg';
 import demonSlayer from '@/assets/images/animes/Kimetsu-no-Yaiba.jpg';
 import dandadan from '@/assets/images/animes/Dandadan.jpg';
@@ -30,20 +28,14 @@ import '../../components/layout/Slider/Slider.css';
 import '../../components/layout/Grid/Grid.css';
 
 // ─────────────────────────────────────────────────────────────────────────────
-// IDs y SLUGS de la BD (verificados)
-// id=43  slug=ore-dake-level-up-na-ken       → Solo Leveling
-// id=30  slug=kimetsu-no-yaiba               → Demon Slayer
-// id=13  slug=dandadan                       → Dandadan
-// id=85  slug=jujutsu-kaisen                 → Jujutsu Kaisen
-// id=88  slug=kaijuu-8-gou                   → Kaiju No. 8
-// id=56  slug=spy-x-family                   → Spy x Family
-// id=8   slug=chainsaw-man                   → Chainsaw Man
-// id=4   slug=boku-no-hero-academia          → My Hero Academia
-// id=42  slug=one-punch-man                  → One Punch Man
-// id=40  slug=naruto                         → Naruto
+// IDs verificados en BD
+// id=43 Solo Leveling | id=30 Demon Slayer | id=13 Dandadan
+// id=85 Jujutsu Kaisen | id=88 Kaiju No.8 | id=56 Spy x Family
+// id=8  Chainsaw Man | id=4 My Hero Academia | id=42 OPM | id=40 Naruto
 // ─────────────────────────────────────────────────────────────────────────────
 
 export default function Home() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [hasInteracted, setHasInteracted] = useState(false);
@@ -52,227 +44,95 @@ export default function Home() {
 
   // ───────────────────────────────────────────────────────────────────────────
   // CARRUSEL
+  // Títulos y géneros se quedan en su idioma original (nombres propios de anime)
+  // Las descripciones cortas del slider sí se traducen
   // ───────────────────────────────────────────────────────────────────────────
   const carouselSlides = [
     {
       type: 'hero',
       id: 'hero',
       title: 'Anikai',
-      subtitle: 'El momento perfecto para descubrir tu próximo anime',
-      buttons: true,
     },
     {
-      type: 'anime',
-      id: 43,
-      slug: 'ore-dake-level-up-na-ken',
+      type: 'anime', id: 43,
       title: 'Solo Leveling',
       image: soloLeveling,
-      rating: 8.9,
-      year: 2024,
-      episodes: 25,
-      addedDate: 'Finalizado',
-      description: 'Sung Jin-Woo, el cazador más débil de la humanidad, obtiene un poder único que le permite subir de nivel infinitamente. Dos temporadas épicas completas.',
+      rating: 8.9, year: 2024, episodes: 25,
+      statusKey: 'finalizado',
+      descKey: 'slide_solo_leveling',
       genres: ['Acción', 'Fantasía', 'Aventura'],
     },
     {
-      type: 'anime',
-      id: 13,
-      slug: 'dandadan',
+      type: 'anime', id: 13,
       title: 'Dandadan',
       image: dandadan,
-      rating: 8.7,
-      year: 2024,
-      episodes: 24,
-      addedDate: 'Finalizado',
-      description: 'Una comedia sobrenatural única donde alienígenas y fantasmas colisionan. Momo y Okarun viven aventuras increíbles en dos temporadas.',
+      rating: 8.7, year: 2024, episodes: 24,
+      statusKey: 'finalizado',
+      descKey: 'slide_dandadan',
       genres: ['Acción', 'Comedia', 'Sobrenatural'],
     },
     {
-      type: 'anime',
-      id: 85,
-      slug: 'jujutsu-kaisen',
+      type: 'anime', id: 85,
       title: 'Jujutsu Kaisen',
       image: jujutsuKaisen,
-      rating: 8.7,
-      year: 2020,
-      episodes: 47,
-      addedDate: 'En emisión',
-      description: 'Yuji Itadori y sus compañeros luchan contra las maldiciones en el mundo de la hechicería. La T3 está en camino.',
+      rating: 8.7, year: 2020, episodes: 47,
+      statusKey: 'en_emision',
+      descKey: 'slide_jjk',
       genres: ['Acción', 'Sobrenatural', 'Shounen'],
     },
     {
-      type: 'anime',
-      id: 30,
-      slug: 'kimetsu-no-yaiba',
+      type: 'anime', id: 30,
       title: 'Demon Slayer: Kimetsu no Yaiba',
       image: demonSlayer,
-      rating: 8.7,
-      year: 2019,
-      episodes: 63,
-      addedDate: 'Finalizado',
-      description: 'Tanjiro Kamado se convierte en cazador de demonios para salvar a su hermana. Una saga completa con animación de ufotable.',
+      rating: 8.7, year: 2019, episodes: 63,
+      statusKey: 'finalizado',
+      descKey: 'slide_demon_slayer',
       genres: ['Acción', 'Sobrenatural', 'Histórico'],
     },
     {
-      type: 'anime',
-      id: 56,
-      slug: 'spy-x-family',
+      type: 'anime', id: 56,
       title: 'Spy x Family',
       image: spyFamily,
-      rating: 8.6,
-      year: 2022,
-      episodes: 37,
-      addedDate: 'Finalizado',
-      description: 'Un espía, una asesina y una telépata forman una familia falsa. Comedia y acción en 37 episodios completos.',
+      rating: 8.6, year: 2022, episodes: 37,
+      statusKey: 'finalizado',
+      descKey: 'slide_spy_family',
       genres: ['Acción', 'Comedia', 'Slice of Life'],
     },
   ];
 
-  // ───────────────────────────────────────────────────────────────────────────
-  // ANIMES POPULARES
-  // ───────────────────────────────────────────────────────────────────────────
   const featuredAnime = [
-    {
-      id: 85,
-      slug: 'jujutsu-kaisen',
-      title: 'Jujutsu Kaisen',
-      image: jujutsuKaisen,
-      rating: 8.7,
-      year: 2020,
-      episodes: 47,
-      status: 'En emisión',
-    },
-    {
-      id: 88,
-      slug: 'kaijuu-8-gou',
-      title: 'Kaiju No. 8',
-      image: kaiju8Gou,
-      rating: 8.5,
-      year: 2024,
-      episodes: 25,
-      status: 'Finalizado',
-    },
-    {
-      id: 56,
-      slug: 'spy-x-family',
-      title: 'Spy x Family',
-      image: spyFamily,
-      rating: 8.6,
-      year: 2022,
-      episodes: 37,
-      status: 'Finalizado',
-    },
-    {
-      id: 8,
-      slug: 'chainsaw-man',
-      title: 'Chainsaw Man',
-      image: chainsawMan,
-      rating: 8.6,
-      year: 2022,
-      episodes: 12,
-      status: 'Finalizado',
-    },
+    { id: 85, title: 'Jujutsu Kaisen',  image: jujutsuKaisen, rating: 8.7, year: 2020, episodes: 47,  statusKey: 'en_emision' },
+    { id: 88, title: 'Kaiju No. 8',     image: kaiju8Gou,     rating: 8.5, year: 2024, episodes: 25,  statusKey: 'finalizado' },
+    { id: 56, title: 'Spy x Family',    image: spyFamily,     rating: 8.6, year: 2022, episodes: 37,  statusKey: 'finalizado' },
+    { id: 8,  title: 'Chainsaw Man',    image: chainsawMan,   rating: 8.6, year: 2022, episodes: 12,  statusKey: 'finalizado' },
   ];
 
-  // ───────────────────────────────────────────────────────────────────────────
-  // RECOMENDACIÓN DE LA SEMANA
-  // ───────────────────────────────────────────────────────────────────────────
   const curatorPick = {
     id: 43,
-    slug: 'ore-dake-level-up-na-ken',
     title: 'Solo Leveling',
     image: soloLeveling,
     rating: 8.9,
-    description: 'Sung Jin-Woo, el cazador más débil de la humanidad, obtiene un poder único que le permite subir de nivel infinitamente. Una obra maestra del género action-fantasy con dos temporadas completas.',
+    descKey: 'curator_solo_leveling',
     genres: ['Acción', 'Fantasía', 'Aventura', 'Shounen'],
   };
 
-  // ───────────────────────────────────────────────────────────────────────────
-  // PRÓXIMOS ESTRENOS
-  // ───────────────────────────────────────────────────────────────────────────
   const upcomingReleases = [
-    {
-      id: 30,
-      slug: 'kimetsu-no-yaiba',
-      title: 'Demon Slayer: Infinity Castle',
-      image: demonSlayer,
-      releaseDate: 'Mayo 2025',
-      type: 'Película',
-    },
-    {
-      id: 4,
-      slug: 'boku-no-hero-academia',
-      title: 'My Hero Academia: película',
-      image: myHeroAcademia,
-      releaseDate: '2025',
-      type: 'Película',
-    },
-    {
-      id: 42,
-      slug: 'one-punch-man',
-      title: 'One Punch Man Season 3',
-      image: onePunchMan,
-      releaseDate: '2025',
-      type: 'Temporada',
-    },
-    {
-      id: 40,
-      slug: 'naruto',
-      title: 'Naruto: Nuevo Proyecto',
-      image: naruto,
-      releaseDate: '2025',
-      type: 'Especial',
-    },
+    { id: 30, title: 'Demon Slayer: Infinity Castle', image: demonSlayer,    releaseDate: 'Mayo 2025', typeKey: 'type_movie' },
+    { id: 4,  title: 'My Hero Academia: película',    image: myHeroAcademia, releaseDate: '2025',      typeKey: 'type_movie' },
+    { id: 42, title: 'One Punch Man Season 3',        image: onePunchMan,    releaseDate: '2025',      typeKey: 'type_season' },
+    { id: 40, title: 'Naruto: Nuevo Proyecto',        image: naruto,         releaseDate: '2025',      typeKey: 'type_special' },
   ];
 
-  // ───────────────────────────────────────────────────────────────────────────
-  // NOTICIAS
-  // ───────────────────────────────────────────────────────────────────────────
+  // Noticias: títulos y excerpts se quedan en español (son contenido editorial)
   const news = [
-    {
-      id: 1,
-      title: 'Solo Leveling Season 2 completa su emisión',
-      excerpt: 'La segunda temporada ha concluido con una animación impresionante por parte de A-1 Pictures...',
-      date: 'Mar 2025',
-      category: 'Finalizado',
-      image: soloLeveling,
-      animeId: 43,
-      animeSlug: 'ore-dake-level-up-na-ken',
-    },
-    {
-      id: 2,
-      title: 'Demon Slayer: Infinity Castle llega a cines en mayo',
-      excerpt: 'Ufotable confirma que la primera película del arco final de Kimetsu no Yaiba estrena en mayo de 2025...',
-      date: 'Mar 2025',
-      category: 'Películas',
-      image: demonSlayer,
-      animeId: 30,
-      animeSlug: 'kimetsu-no-yaiba',
-    },
-    {
-      id: 3,
-      title: 'Dandadan T2 completa su emisión',
-      excerpt: 'La segunda temporada de Dandadan ha concluido. Science SARU ha confirmado que habrá más contenido...',
-      date: 'Mar 2025',
-      category: 'Finalizado',
-      image: dandadan,
-      animeId: 13,
-      animeSlug: 'dandadan',
-    },
-    {
-      id: 4,
-      title: 'Jujutsu Kaisen: T3 en producción en MAPPA',
-      excerpt: 'MAPPA confirma que la tercera temporada de JJK está en desarrollo activo tras el cierre del manga...',
-      date: 'Feb 2025',
-      category: 'Anuncios',
-      image: jujutsuKaisen,
-      animeId: 85,
-      animeSlug: 'jujutsu-kaisen',
-    },
+    { id: 1, titleKey: 'news_solo_leveling',  excerptKey: 'news_solo_leveling_ex',  date: 'Mar 2025', category: 'Finalizado', image: soloLeveling,  animeId: 43 },
+    { id: 2, titleKey: 'news_demon_slayer',   excerptKey: 'news_demon_slayer_ex',   date: 'Mar 2025', category: 'Películas',  image: demonSlayer,   animeId: 30 },
+    { id: 3, titleKey: 'news_dandadan',       excerptKey: 'news_dandadan_ex',       date: 'Mar 2025', category: 'Finalizado', image: dandadan,      animeId: 13 },
+    { id: 4, titleKey: 'news_jjk',            excerptKey: 'news_jjk_ex',            date: 'Feb 2025', category: 'Anuncios',   image: jujutsuKaisen, animeId: 85 },
   ];
 
   // ───────────────────────────────────────────────────────────────────────────
-  // AUTOPLAY CARRUSEL
+  // AUTOPLAY
   // ───────────────────────────────────────────────────────────────────────────
   useEffect(() => {
     if (isPaused) return;
@@ -286,35 +146,23 @@ export default function Home() {
     return () => clearInterval(timer);
   }, [carouselSlides.length, isPaused, hasInteracted, currentSlide]);
 
-  const handleInteraction = () => {
-    if (!hasInteracted) setHasInteracted(true);
-  };
-
-  const goToSlide = (index: number) => {
-    handleInteraction();
-    setCurrentSlide(index);
-  };
-
+  const handleInteraction = () => { if (!hasInteracted) setHasInteracted(true); };
+  const goToSlide = (i: number) => { handleInteraction(); setCurrentSlide(i); };
   const nextSlide = () => {
     handleInteraction();
-    setCurrentSlide((prev) => {
-      const next = (prev + 1) % carouselSlides.length;
-      return hasInteracted && next === 0 ? 1 : next;
-    });
+    setCurrentSlide(prev => { const n = (prev + 1) % carouselSlides.length; return hasInteracted && n === 0 ? 1 : n; });
   };
-
   const prevSlide = () => {
     handleInteraction();
-    setCurrentSlide((prev) => {
-      const next = (prev - 1 + carouselSlides.length) % carouselSlides.length;
-      return hasInteracted && next === 0 ? carouselSlides.length - 1 : next;
-    });
+    setCurrentSlide(prev => { const n = (prev - 1 + carouselSlides.length) % carouselSlides.length; return hasInteracted && n === 0 ? carouselSlides.length - 1 : n; });
   };
+  const goToAnime = (id: number) => navigate(`/anime/${id}`);
 
   // ───────────────────────────────────────────────────────────────────────────
-  // NAVEGACIÓN — usa el ID numérico para ir al detalle
+  // HELPERS
   // ───────────────────────────────────────────────────────────────────────────
-  const goToAnime = (id: number) => navigate(`/anime/${id}`);
+  const statusLabel = (key: string) => key === 'finalizado' ? t('home.finalizado') : t('home.en_emision');
+  const isAiring = (key: string) => key === 'en_emision';
 
   return (
     <div className="home">
@@ -327,24 +175,19 @@ export default function Home() {
       >
         <div className="slider-container" ref={sliderRef}>
           {carouselSlides.map((slide, index) => (
-            <div
-              key={slide.slug || slide.id}
-              className={`slider-slide ${index === currentSlide ? 'active' : ''}`}
-            >
+            <div key={slide.id} className={`slider-slide ${index === currentSlide ? 'active' : ''}`}>
               {slide.type === 'hero' ? (
                 <div className="slider-hero">
                   <div className="slider-hero__overlay" />
                   <div className="slider-hero__content">
                     <h1 className="slider-hero__title">Anikai</h1>
-                    <p className="slider-hero__subtitle">
-                      El momento perfecto para descubrir tu próximo anime
-                    </p>
+                    <p className="slider-hero__subtitle">{t('home.hero_subtitle')}</p>
                     <div className="slider-hero__buttons">
                       <button className="btn btn--primary" onClick={() => navigate('/catalogo')}>
-                        <Play size={20} />Explorar Catálogo
+                        <Play size={20} />{t('home.explore_catalog')}
                       </button>
                       <button className="btn btn--secondary" onClick={() => navigate('/recomendaciones')}>
-                        <Star size={20} />Recomendaciones
+                        <Star size={20} />{t('home.recommendations')}
                       </button>
                     </div>
                   </div>
@@ -356,8 +199,8 @@ export default function Home() {
                   <div className="slider-content">
                     <div className="slider-content__inner">
                       <div className="slider-content__meta">
-                        <span className={`slider-badge ${(slide as any).addedDate === 'En emisión' ? 'slider-badge--airing' : 'slider-badge--new'}`}>
-                          {(slide as any).addedDate}
+                        <span className={`slider-badge ${isAiring((slide as any).statusKey) ? 'slider-badge--airing' : 'slider-badge--new'}`}>
+                          {statusLabel((slide as any).statusKey)}
                         </span>
                         <span className="slider-badge slider-badge--rating">
                           <Star size={14} fill="#ffffff" stroke="#ffffff" />
@@ -366,12 +209,12 @@ export default function Home() {
                       </div>
 
                       <h2 className="slider-content__title">{slide.title}</h2>
-                      <p className="slider-content__description">{(slide as any).description}</p>
+                      <p className="slider-content__description">{t(`home.${(slide as any).descKey}`)}</p>
 
                       <div className="slider-content__info">
                         <span>{(slide as any).year}</span>
                         <span>•</span>
-                        <span>{(slide as any).episodes} episodios</span>
+                        <span>{(slide as any).episodes} {t('common.episodes_short')}</span>
                       </div>
 
                       <div className="slider-content__genres">
@@ -381,17 +224,11 @@ export default function Home() {
                       </div>
 
                       <div className="slider-content__buttons">
-                        <button
-                          className="btn btn--primary"
-                          onClick={() => goToAnime((slide as any).id)}
-                        >
-                          Ver Detalles
+                        <button className="btn btn--primary" onClick={() => goToAnime((slide as any).id)}>
+                          {t('home.view_details')}
                         </button>
-                        <button
-                          className="btn btn--secondary"
-                          onClick={() => goToAnime((slide as any).id)}
-                        >
-                          <Play size={18} />Ver Ahora
+                        <button className="btn btn--secondary" onClick={() => goToAnime((slide as any).id)}>
+                          <Play size={18} />{t('home.watch_now')}
                         </button>
                       </div>
                     </div>
@@ -401,12 +238,8 @@ export default function Home() {
             </div>
           ))}
 
-          <button className="slider-control slider-control--prev" onClick={prevSlide}>
-            <ChevronLeft size={32} />
-          </button>
-          <button className="slider-control slider-control--next" onClick={nextSlide}>
-            <ChevronRight size={32} />
-          </button>
+          <button className="slider-control slider-control--prev" onClick={prevSlide}><ChevronLeft size={32} /></button>
+          <button className="slider-control slider-control--next" onClick={nextSlide}><ChevronRight size={32} /></button>
 
           <div className="slider-indicators">
             {carouselSlides.map((_, index) => (
@@ -414,7 +247,7 @@ export default function Home() {
                 key={index}
                 className={`slider-indicator ${index === currentSlide ? 'active' : ''}`}
                 onClick={() => goToSlide(index)}
-                aria-label={`Ir a slide ${index + 1}`}
+                aria-label={`${index + 1}`}
               />
             ))}
           </div>
@@ -429,16 +262,15 @@ export default function Home() {
           <section className="home__curator">
             <div className="section-header">
               <h2 className="section-title">
-                <Award size={28} />
-                Recomendación de la Semana
+                <Award size={28} />{t('home.week_pick')}
               </h2>
-              <p className="section-subtitle">Nuestra selección especial para ti</p>
+              <p className="section-subtitle">{t('home.week_pick_sub')}</p>
             </div>
 
             <div className="curator-card">
               <div className="curator-card__image">
                 <img src={curatorPick.image} alt={curatorPick.title} />
-                <div className="curator-card__badge">Recomendado</div>
+                <div className="curator-card__badge">{t('home.week_pick')}</div>
               </div>
               <div className="curator-card__content">
                 <h3 className="curator-card__title">{curatorPick.title}</h3>
@@ -448,19 +280,16 @@ export default function Home() {
                     {curatorPick.rating}
                   </span>
                 </div>
-                <p className="curator-card__description">{curatorPick.description}</p>
+                <p className="curator-card__description">{t(`home.${curatorPick.descKey}`)}</p>
                 <div className="curator-card__spacer" />
                 <div className="curator-card__bottom">
                   <div className="curator-card__genres">
-                    {curatorPick.genres.map((genre) => (
+                    {curatorPick.genres.map(genre => (
                       <span key={genre} className="genre-tag">{genre}</span>
                     ))}
                   </div>
-                  <button
-                    className="btn btn--primary btn--full"
-                    onClick={() => goToAnime(curatorPick.id)}
-                  >
-                    Ver Detalles
+                  <button className="btn btn--primary btn--full" onClick={() => goToAnime(curatorPick.id)}>
+                    {t('home.view_details')}
                   </button>
                 </div>
               </div>
@@ -470,23 +299,17 @@ export default function Home() {
           {/* Más Populares */}
           <section className="home__popular">
             <div className="section-header">
-              <h2 className="section-title">
-                <Flame size={28} />
-                Más Populares
-              </h2>
-              <button className="view-all" onClick={() => navigate('/catalogo')}>
-                Ver todo →
-              </button>
+              <h2 className="section-title"><Flame size={28} />{t('home.most_popular')}</h2>
+              <button className="view-all" onClick={() => navigate('/catalogo')}>{t('home.see_all')}</button>
             </div>
 
             <div className="anime-grid">
-              {featuredAnime.map((anime) => (
+              {featuredAnime.map(anime => (
                 <div key={anime.id} className="anime-card">
                   <div className="anime-card__image">
                     <img src={anime.image} alt={anime.title} />
                     <div className="anime-card__rating">
-                      <Star size={14} fill="#e63946" stroke="#e63946" />
-                      {anime.rating}
+                      <Star size={14} fill="#e63946" stroke="#e63946" />{anime.rating}
                     </div>
                   </div>
                   <div className="anime-card__content">
@@ -494,16 +317,16 @@ export default function Home() {
                     <div className="anime-card__meta">
                       <span>{anime.year}</span>
                       <span>•</span>
-                      <span>{anime.episodes} eps</span>
+                      <span>{anime.episodes} {t('common.episodes_short')}</span>
                     </div>
                     <div className="anime-card__footer">
-                      <span className={`status status--${anime.status === 'Finalizado' ? 'completed' : 'airing'}`}>
-                        {anime.status}
+                      <span className={`status status--${isAiring(anime.statusKey) ? 'airing' : 'completed'}`}>
+                        {statusLabel(anime.statusKey)}
                       </span>
                       <button
                         className="anime-card__arrow"
                         onClick={() => goToAnime(anime.id)}
-                        aria-label={`Ver detalles de ${anime.title}`}
+                        aria-label={anime.title}
                       >
                         <ArrowRight size={18} />
                       </button>
@@ -517,32 +340,25 @@ export default function Home() {
           {/* Próximos Estrenos */}
           <section className="home__upcoming">
             <div className="section-header">
-              <h2 className="section-title">
-                <Calendar size={28} />
-                Próximos Estrenos
-              </h2>
+              <h2 className="section-title"><Calendar size={28} />{t('home.upcoming')}</h2>
             </div>
 
             <div className="upcoming-grid">
-              {upcomingReleases.map((anime) => (
+              {upcomingReleases.map(anime => (
                 <div key={anime.id} className="upcoming-card">
                   <div className="upcoming-card__image">
                     <img src={anime.image} alt={anime.title} />
                     <div className="upcoming-card__date">
-                      <Calendar size={16} />
-                      {anime.releaseDate}
+                      <Calendar size={16} />{anime.releaseDate}
                     </div>
                   </div>
                   <div className="upcoming-card__content">
                     <h3 className="upcoming-card__title">{anime.title}</h3>
                     <div className="upcoming-card__meta">
-                      <span className="type">{anime.type}</span>
+                      <span className="type">{t(`home.${anime.typeKey}`)}</span>
                     </div>
-                    <button
-                      className="btn-notify"
-                      onClick={() => goToAnime(anime.id)}
-                    >
-                      Ver anime
+                    <button className="btn-notify" onClick={() => goToAnime(anime.id)}>
+                      {t('home.see_anime')}
                     </button>
                   </div>
                 </div>
@@ -556,13 +372,12 @@ export default function Home() {
         <aside className="home__news-sidebar">
           <div className="news-sidebar__header">
             <h2 className="news-sidebar__title">
-              <Newspaper size={24} />
-              Noticias
+              <Newspaper size={24} />{t('home.news')}
             </h2>
           </div>
 
           <div className="news-list">
-            {news.map((item) => (
+            {news.map(item => (
               <article
                 key={item.id}
                 className="news-sidebar-card"
@@ -570,13 +385,13 @@ export default function Home() {
                 style={{ cursor: 'pointer' }}
               >
                 <div className="news-sidebar-card__image">
-                  <img src={item.image} alt={item.title} />
+                  <img src={item.image} alt={t(`home.${item.titleKey}`)} />
                   <div className="news-sidebar-card__category">{item.category}</div>
                 </div>
                 <div className="news-sidebar-card__content">
                   <div className="news-sidebar-card__date">{item.date}</div>
-                  <h3 className="news-sidebar-card__title">{item.title}</h3>
-                  <p className="news-sidebar-card__excerpt">{item.excerpt}</p>
+                  <h3 className="news-sidebar-card__title">{t(`home.${item.titleKey}`)}</h3>
+                  <p className="news-sidebar-card__excerpt">{t(`home.${item.excerptKey}`)}</p>
                 </div>
               </article>
             ))}
@@ -587,7 +402,7 @@ export default function Home() {
             onClick={() => navigate('/catalogo')}
             style={{ marginTop: '1.5rem', width: '100%' }}
           >
-            Ver catálogo →
+            {t('home.see_catalog')}
           </button>
         </aside>
       </div>

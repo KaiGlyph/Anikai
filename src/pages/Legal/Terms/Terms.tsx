@@ -1,6 +1,7 @@
 // src/pages/legal/Terms.tsx
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { 
   Scale, 
@@ -22,6 +23,7 @@ import {
 import './Terms.scss';
 
 const Terms: React.FC = () => {
+  const { t } = useTranslation();
   const [accepted, setAccepted] = useState(false);
   const navigate = useNavigate();
   const { scrollYProgress } = useScroll();
@@ -33,134 +35,68 @@ const Terms: React.FC = () => {
     {
       icon: <Shield size={22} />,
       number: '01',
-      title: 'Aceptación de los Términos',
-      content: `Al acceder y utilizar Anikai, aceptas cumplir y estar sujeto a estos Términos y Condiciones de uso. Si no estás de acuerdo con alguno de estos términos, te pedimos que no utilices nuestro sitio web.
-
-Anikai es una plataforma de recomendaciones y curaduría de contenido anime dirigida a mayores de 16 años. El uso del sitio implica la aceptación plena de todas las condiciones aquí descritas.`
+      title: t('legal.terms_s01_title'),
+      content: t('legal.terms_s01_body'),
     },
     {
       icon: <BookOpen size={22} />,
       number: '02',
-      title: 'Descripción del Servicio',
-      content: `Anikai proporciona un servicio de recomendaciones personalizadas de anime basado en la curaduría de un equipo especializado. El servicio incluye:
-
-• Catálogo de anime con información detallada
-• Sistema de listas personales (Favoritos, Para Ver, Visto)
-• Recomendaciones personalizadas
-• Fichas técnicas de cada título
-
-Nos reservamos el derecho de modificar, suspender o discontinuar cualquier aspecto del servicio en cualquier momento sin previo aviso.`
+      title: t('legal.terms_s02_title'),
+      content: t('legal.terms_s02_body'),
     },
     {
       icon: <UserCog size={22} />,
       number: '03',
-      title: 'Registro y Cuenta de Usuario',
-      content: `Para acceder a ciertas funcionalidades del sitio, puede ser necesario crear una cuenta de usuario. Al registrarte, te comprometes a:
-
-• Proporcionar información veraz y actualizada
-• Mantener la confidencialidad de tus credenciales
-• Notificar inmediatamente cualquier uso no autorizado de tu cuenta
-• Aceptar la responsabilidad por todas las actividades que ocurran bajo tu cuenta
-
-Anikai no se hace responsable por la pérdida o robo de información de acceso.`
+      title: t('legal.terms_s03_title'),
+      content: t('legal.terms_s03_body'),
     },
     {
       icon: <Copyright size={22} />,
       number: '04',
-      title: 'Propiedad Intelectual',
-      content: `Todo el contenido original de Anikai, incluyendo pero no limitado a:
-
-• Diseño gráfico y interfaz de usuario
-• Logotipos, símbolos y elementos visuales
-• Textos, recomendaciones y reseñas
-• Código fuente y estructura del sitio
-
-Está protegido por derechos de propiedad intelectual e industrial y pertenece exclusivamente a Anikai o a sus licenciantes.
-
-Las imágenes, títulos y sinopsis de anime son propiedad de sus respectivos creadores y se utilizan bajo el principio de uso justo con fines informativos y de recomendación.`
+      title: t('legal.terms_s04_title'),
+      content: t('legal.terms_s04_body'),
     },
     {
       icon: <FileText size={22} />,
       number: '05',
-      title: 'Contenido y Recomendaciones',
-      content: `Las recomendaciones proporcionadas en Anikai son opiniones subjetivas de nuestro equipo curador. No garantizamos:
-
-• Que todas las recomendaciones se ajusten a tus gustos personales
-• La disponibilidad continua de los títulos recomendados en plataformas de streaming
-• La exactitud absoluta de toda la información del catálogo
-
-Las clasificaciones por edad y advertencias de contenido son orientativas. Es responsabilidad del usuario verificar la idoneidad del contenido.`
+      title: t('legal.terms_s05_title'),
+      content: t('legal.terms_s05_body'),
     },
     {
       icon: <AlertTriangle size={22} />,
       number: '06',
-      title: 'Conducta del Usuario',
-      content: `Al utilizar Anikai, te comprometes a NO:
-
-• Utilizar el sitio para fines ilegales o no autorizados
-• Intentar acceder a sistemas o datos protegidos
-• Interferir con el funcionamiento del sitio
-• Utilizar bots, scrapers o herramientas automatizadas
-• Suplantar la identidad de otros usuarios o del personal
-• Publicar contenido ofensivo, discriminatorio o inapropiado
-
-Nos reservamos el derecho de suspender o terminar cuentas que violen estos términos.`
+      title: t('legal.terms_s06_title'),
+      content: t('legal.terms_s06_body'),
     },
     {
       icon: <Lock size={22} />,
       number: '07',
-      title: 'Privacidad y Protección de Datos',
-      content: `Tu privacidad es importante para nosotros. El tratamiento de tus datos personales se rige por nuestra Política de Privacidad, que incluye:
-
-• Qué datos recopilamos y por qué
-• Cómo utilizamos y protegemos tu información
-• Tus derechos sobre tus datos
-• Uso de cookies y tecnologías similares
-
-Al usar Anikai, aceptas el tratamiento de tus datos según lo establecido en dicha política.`
+      title: t('legal.terms_s07_title'),
+      content: t('legal.terms_s07_body'),
     },
     {
       icon: <Server size={22} />,
       number: '08',
-      title: 'Limitación de Responsabilidad',
-      content: `Anikai se proporciona "tal cual" y "según disponibilidad". En la máxima medida permitida por la ley:
-
-• No garantizamos que el sitio sea ininterrumpido, seguro o libre de errores
-• No nos hacemos responsables por daños directos, indirectos o consecuentes
-• No garantizamos la precisión, actualidad o integridad de la información
-• No somos responsables por enlaces a sitios de terceros
-
-El usuario asume todo el riesgo asociado con el uso del sitio.`
+      title: t('legal.terms_s08_title'),
+      content: t('legal.terms_s08_body'),
     },
     {
       icon: <Clock size={22} />,
       number: '09',
-      title: 'Modificaciones de los Términos',
-      content: `Nos reservamos el derecho de modificar estos Términos y Condiciones en cualquier momento. Los cambios entrarán en vigor inmediatamente después de su publicación en el sitio.
-
-Tu uso continuado de Anikai después de cualquier modificación constituye tu aceptación de los nuevos términos. Te recomendamos revisar periódicamente esta página.`
+      title: t('legal.terms_s09_title'),
+      content: t('legal.terms_s09_body'),
     },
     {
       icon: <Globe size={22} />,
       number: '10',
-      title: 'Ley Aplicable y Jurisdicción',
-      content: `Estos Términos y Condiciones se regirán e interpretarán de conformidad con las leyes del país donde Anikai tenga su sede operativa, sin tener en cuenta sus disposiciones sobre conflicto de leyes.
-
-Cualquier disputa relacionada con estos términos o el uso del sitio se someterá a la jurisdicción exclusiva de los tribunales competentes, salvo que la ley aplicable disponga lo contrario.`
+      title: t('legal.terms_s10_title'),
+      content: t('legal.terms_s10_body'),
     },
     {
       icon: <Mail size={22} />,
       number: '11',
-      title: 'Contacto',
-      content: `Si tienes alguna pregunta sobre estos Términos y Condiciones, puedes contactarnos a través de:
-
-Email: contact@anikai.com
-
-Formulario de contacto disponible en la sección de Ayuda
-
-Tiempo de respuesta: 24-48 horas hábiles
-
-Estaremos encantados de resolver tus dudas.`
+      title: t('legal.terms_s11_title'),
+      content: t('legal.terms_s11_body'),
     }
   ];
 
@@ -210,7 +146,7 @@ Estaremos encantados de resolver tus dudas.`
               transition={{ delay: 0.2, duration: 0.8 }}
               className="hero-title"
             >
-              Términos y <span className="gradient-text">Condiciones</span>
+              {t('legal.terms_title')} <span className="gradient-text">{t('legal.terms_title_gradient')}</span>
             </motion.h1>
             
             <motion.p
@@ -219,7 +155,7 @@ Estaremos encantados de resolver tus dudas.`
               transition={{ delay: 0.3, duration: 0.6 }}
               className="hero-subtitle"
             >
-              Última actualización: 23 de Febrero, 2026
+              {t('legal.terms_subtitle')}
             </motion.p>
           </div>
         </motion.div>
@@ -234,9 +170,7 @@ Estaremos encantados de resolver tus dudas.`
         >
           <div className="intro-accent" />
           <p>
-            Bienvenido a <strong>Anikai</strong>. Por favor, lee cuidadosamente 
-            estos Términos y Condiciones antes de utilizar nuestro sitio web. 
-            Al acceder o usar nuestros servicios, aceptas estar sujeto a estos términos.
+            {t('legal.terms_intro_before')} <strong>Anikai</strong>{t('legal.terms_intro_after')}
           </p>
         </motion.div>
 
@@ -301,20 +235,20 @@ Estaremos encantados de resolver tus dudas.`
                   <CheckCircle2 size={18} />
                 </div>
                 <span className="checkbox-label">
-                  He leído y acepto los Términos y Condiciones
+                  {t('legal.terms_accept_label')}
                 </span>
               </label>
 
               <div className="acceptance-buttons">
                 <Link to="/" className="btn btn-ghost">
-                  Volver al inicio
+                  {t('legal.back_home')}
                 </Link>
                 <button 
                   onClick={handleAccept}
                   className={`btn btn-neon ${!accepted ? 'disabled' : ''}`}
                   disabled={!accepted}
                 >
-                  Continuar a explorar
+                  {t('legal.terms_continue')}
                   <ArrowRight size={18} />
                 </button>
               </div>
@@ -324,9 +258,9 @@ Estaremos encantados de resolver tus dudas.`
 
         {/* Footer Links */}
         <div className="terms-footer">
-          <Link to="/privacidad" className="footer-link">Política de Privacidad</Link>
+          <Link to="/privacidad" className="footer-link">{t('legal.footer_privacy')}</Link>
           <span className="separator">/</span>
-          <Link to="/aviso-legal" className="footer-link">Aviso Legal</Link>
+          <Link to="/aviso-legal" className="footer-link">{t('legal.footer_legal')}</Link>
         </div>
       </div>
     </div>

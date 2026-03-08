@@ -1,6 +1,7 @@
 // src/pages/AnimeDetail/AnimeDetail.tsx
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { supabase } from '../../lib/supabaseClient';
 import LoginModal from '../../components/common/LoginModal';
 import { 
@@ -40,19 +41,10 @@ interface UserList {
 type WatchStatus = 'watching' | 'completed' | 'planned' | 'dropped' | '';
 
 // ─────────────────────────────────────────────────────────────────────────────
-// CONSTANTES
-// ─────────────────────────────────────────────────────────────────────────────
-const STATUS_OPTIONS: { value: WatchStatus; label: string; color: string }[] = [
-  { value: 'watching',  label: 'Viendo',    color: '#3b82f6' },
-  { value: 'completed', label: 'Completado', color: '#2a9d8f' },
-  { value: 'planned',   label: 'Planeado',   color: '#f4a261' },
-  { value: 'dropped',   label: 'Abandonado', color: '#e63946' },
-];
-
-// ─────────────────────────────────────────────────────────────────────────────
 // COMPONENTE PRINCIPAL
 // ─────────────────────────────────────────────────────────────────────────────
 export default function AnimeDetail() {
+  const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
@@ -335,7 +327,7 @@ export default function AnimeDetail() {
     <div className="anime-detail-page">
       <div className="anime-detail-loading">
         <div className="loading-spinner" />
-        <p>Cargando información del anime...</p>
+        <p>{t('anime.loading')}</p>
       </div>
     </div>
   );
@@ -343,9 +335,9 @@ export default function AnimeDetail() {
   if (error || !anime) return (
     <div className="anime-detail-page">
       <div className="anime-detail-error">
-        <h1>❌ Error</h1>
-        <p>{error || 'Anime no encontrado'}</p>
-        <button onClick={() => navigate('/catalogo')}>Volver al Catálogo</button>
+        <h1>❌ {t('common.error')}</h1>
+        <p>{error || t('anime.not_found')}</p>
+        <button onClick={() => navigate('/catalogo')}>{t('anime.back_catalog')}</button>
       </div>
     </div>
   );
@@ -353,6 +345,14 @@ export default function AnimeDetail() {
   const showEpisodesInput = currentStatus === 'watching' || currentStatus === 'dropped';
   // Puntuación a mostrar (hover tiene prioridad sobre la guardada)
   const displayScore = hoveredScore || userScore;
+
+  // STATUS_OPTIONS con labels traducidas
+  const STATUS_OPTIONS: { value: WatchStatus; label: string; color: string }[] = [
+    { value: 'watching',  label: t('anime.tracking.watching'),  color: '#3b82f6' },
+    { value: 'completed', label: t('anime.tracking.completed'), color: '#2a9d8f' },
+    { value: 'planned',   label: t('anime.tracking.planned'),   color: '#f4a261' },
+    { value: 'dropped',   label: t('anime.tracking.dropped'),   color: '#e63946' },
+  ];
 
   // ───────────────────────────────────────────────────────────────────────────
   // RENDER PRINCIPAL
@@ -383,7 +383,7 @@ export default function AnimeDetail() {
               {isLoggedIn && isInLists && userScore > 0 && (
                 <span className="badge badge--user-score">
                   <Star size={14} fill="#f4a261" stroke="#f4a261" />
-                  Mi nota: {userScore}
+                  {t('anime.my_score')}: {userScore}
                 </span>
               )}
             </div>
@@ -392,7 +392,7 @@ export default function AnimeDetail() {
 
             <div className="anime-detail-hero__meta">
               <span><Calendar size={16} />{anime.year}</span>
-              <span><Clock size={16} />{anime.episodes} episodios</span>
+              <span><Clock size={16} />{anime.episodes} {t('anime.episodes').toLowerCase()}</span>
               {anime.studios?.length > 0 && <span><Play size={16} />{anime.studios[0]}</span>}
             </div>
 
@@ -403,7 +403,7 @@ export default function AnimeDetail() {
             {/* ── BOTONES PRINCIPALES ── */}
             <div className="anime-detail-hero__actions">
               <button className="btn btn--primary">
-                <Play size={20} />Ver Trailer
+                <Play size={20} />{t('anime.watch_trailer')}
               </button>
 
               {/* Añadir a lista */}
@@ -412,7 +412,10 @@ export default function AnimeDetail() {
                   className={`btn btn--secondary ${isInLists ? 'active' : ''}`}
                   onClick={() => !isLoggedIn ? setShowLoginModal(true) : setShowListSelector(!showListSelector)}
                 >
-                  {isInLists ? <><Check size={20} />En Lista</> : <><Plus size={20} />Añadir a Lista</>}
+                  {isInLists
+                    ? <><Check size={20} />{t('anime.in_list')}</>
+                    : <><Plus size={20} />{t('anime.add_to_list')}</>
+                  }
                 </button>
 
                 {showListSelector && isLoggedIn && (
@@ -445,17 +448,17 @@ export default function AnimeDetail() {
                 className={`btn btn--icon ${isLiked ? 'btn--liked' : ''}`}
                 onClick={handleLike}
                 disabled={likingAnime}
-                title={isLiked ? 'Quitar de Me gusta' : 'Me gusta'}
+                title={isLiked ? t('anime.unlike') : t('anime.like')}
               >
                 <Heart size={20} fill={isLiked ? '#ec4899' : 'none'} stroke={isLiked ? '#ec4899' : 'currentColor'} />
               </button>
 
               {/* Compartir */}
               <div style={{ position: 'relative' }}>
-                <button className="btn btn--icon" onClick={handleShare} title="Compartir">
+                <button className="btn btn--icon" onClick={handleShare} title={t('common.share')}>
                   <Share2 size={20} />
                 </button>
-                {copied && <div className="copied-tooltip">¡Enlace copiado!</div>}
+                {copied && <div className="copied-tooltip">{t('anime.link_copied')}</div>}
               </div>
             </div>
 
@@ -464,7 +467,7 @@ export default function AnimeDetail() {
               <div className="tracking-panel">
                 <div className="tracking-panel__header">
                   <BookOpen size={16} />
-                  <span>Mi seguimiento</span>
+                  <span>{t('anime.tracking.title')}</span>
                 </div>
 
                 {/* Botones de estado */}
@@ -491,7 +494,7 @@ export default function AnimeDetail() {
                   <div className="tracking-episodes-row">
                     <label className="tracking-episodes-label">
                       <Clock size={14} />
-                      Episodios vistos
+                      {t('anime.tracking.episodes_watched')}
                     </label>
                     <div className="tracking-episodes-input">
                       <button className="ep-btn" onClick={() => { setEpisodesWatched(Math.max(0, episodesWatched - 1)); setTrackingDirty(true); }}>−</button>
@@ -518,8 +521,8 @@ export default function AnimeDetail() {
                     <Clock size={14} />
                     <span>
                       {currentStatus === 'completed'
-                        ? `${anime.episodes || 0} / ${anime.episodes || 0} episodios`
-                        : `0 / ${anime.episodes || 0} episodios`}
+                        ? `${anime.episodes || 0} / ${anime.episodes || 0} ${t('anime.episodes').toLowerCase()}`
+                        : `0 / ${anime.episodes || 0} ${t('anime.episodes').toLowerCase()}`}
                     </span>
                   </div>
                 )}
@@ -528,7 +531,7 @@ export default function AnimeDetail() {
                 <div className="tracking-score-row">
                   <label className="tracking-episodes-label">
                     <Star size={14} />
-                    Mi puntuación
+                    {t('anime.tracking.my_score')}
                   </label>
                   <div className="tracking-score-stars">
                     {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(n => (
@@ -565,7 +568,7 @@ export default function AnimeDetail() {
                     onClick={handleSaveTracking}
                     disabled={savingTracking}
                   >
-                    {savingTracking ? 'Guardando...' : '✓ Guardar cambios'}
+                    {savingTracking ? t('anime.tracking.saving') : t('anime.tracking.save')}
                   </button>
                 )}
               </div>
@@ -578,24 +581,24 @@ export default function AnimeDetail() {
       {/* CONTENIDO */}
       <div className="anime-detail-content">
         <section className="anime-detail-section">
-          <h2 className="section-title">Sinopsis</h2>
+          <h2 className="section-title">{t('anime.synopsis')}</h2>
           <p className="anime-detail-synopsis">{anime.synopsis}</p>
         </section>
 
         <section className="anime-detail-section">
-          <h2 className="section-title">Información</h2>
+          <h2 className="section-title">{t('anime.information')}</h2>
           <div className="anime-detail-info-grid">
-            <div className="info-item"><span className="info-label">Tipo</span><span className="info-value">{anime.type}</span></div>
-            <div className="info-item"><span className="info-label">Estado</span><span className="info-value">{anime.status}</span></div>
-            <div className="info-item"><span className="info-label">Año</span><span className="info-value">{anime.year}</span></div>
-            <div className="info-item"><span className="info-label">Episodios</span><span className="info-value">{anime.episodes}</span></div>
-            <div className="info-item"><span className="info-label">Rating</span><span className="info-value">{anime.rating} ⭐</span></div>
-            <div className="info-item"><span className="info-label">Popularidad</span><span className="info-value">#{anime.popularity}</span></div>
+            <div className="info-item"><span className="info-label">{t('anime.type')}</span><span className="info-value">{anime.type}</span></div>
+            <div className="info-item"><span className="info-label">{t('anime.status')}</span><span className="info-value">{anime.status}</span></div>
+            <div className="info-item"><span className="info-label">{t('anime.year')}</span><span className="info-value">{anime.year}</span></div>
+            <div className="info-item"><span className="info-label">{t('anime.episodes')}</span><span className="info-value">{anime.episodes}</span></div>
+            <div className="info-item"><span className="info-label">{t('anime.rating')}</span><span className="info-value">{anime.rating} ⭐</span></div>
+            <div className="info-item"><span className="info-label">{t('anime.popularity')}</span><span className="info-value">#{anime.popularity}</span></div>
           </div>
         </section>
 
         <section className="anime-detail-section">
-          <h2 className="section-title">Géneros</h2>
+          <h2 className="section-title">{t('anime.genres')}</h2>
           <div className="anime-detail-genres">
             {anime.genres.map(g => <span key={g} className="genre-tag">{g}</span>)}
           </div>
@@ -603,7 +606,7 @@ export default function AnimeDetail() {
 
         {anime.studios?.length > 0 && (
           <section className="anime-detail-section">
-            <h2 className="section-title">Estudios</h2>
+            <h2 className="section-title">{t('anime.studios')}</h2>
             <div className="anime-detail-studios">
               {anime.studios.map(s => <span key={s} className="studio-tag">{s}</span>)}
             </div>
@@ -614,8 +617,8 @@ export default function AnimeDetail() {
       <LoginModal
         isOpen={showLoginModal}
         onClose={() => setShowLoginModal(false)}
-        title="Accede a Mis Listas"
-        subtitle="Inicia sesión para guardar animes en tus listas personales"
+        title={t('anime.login_modal_title')}
+        subtitle={t('anime.login_modal_subtitle')}
         onLoginSuccess={handleLoginSuccess}
       />
     </div>

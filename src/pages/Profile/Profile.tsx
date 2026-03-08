@@ -1,6 +1,7 @@
 // src/pages/Profile/Profile.tsx
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { supabase } from '../../lib/supabaseClient';
 import {
   User, Edit2, Check, X, Camera, Shield, ShieldOff,
@@ -46,6 +47,7 @@ interface UserList {
 // COMPONENTE PRINCIPAL
 // ─────────────────────────────────────────────────────────────────────────────
 export default function Profile() {
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -244,15 +246,15 @@ export default function Profile() {
   const handleSaveUsername = async () => {
     if (!newUsername.trim() || !userId) return;
     if (newUsername.trim().length < 3) {
-      setUsernameError('Mínimo 3 caracteres');
+      setUsernameError(t('profile.username_min'));
       return;
     }
     if (newUsername.trim().length > 20) {
-      setUsernameError('Máximo 20 caracteres');
+      setUsernameError(t('profile.username_max'));
       return;
     }
     if (!/^[a-zA-Z0-9_]+$/.test(newUsername.trim())) {
-      setUsernameError('Solo letras, números y _');
+      setUsernameError(t('profile.username_chars'));
       return;
     }
 
@@ -270,7 +272,7 @@ export default function Profile() {
       setProfile(prev => prev ? { ...prev, username: newUsername.trim() } : null);
       setEditingUsername(false);
     } catch (err: any) {
-      setUsernameError(err.message || 'Error al guardar');
+      setUsernameError(err.message || t('common.error'));
     } finally {
       setSavingUsername(false);
     }
@@ -285,11 +287,11 @@ export default function Profile() {
 
     // Validar tipo y tamaño
     if (!file.type.startsWith('image/')) {
-      alert('Solo se permiten imágenes');
+      alert(t('profile.avatar_type_error'));
       return;
     }
     if (file.size > 2 * 1024 * 1024) {
-      alert('La imagen no puede superar 2MB');
+      alert(t('profile.avatar_size_error'));
       return;
     }
 
@@ -327,7 +329,7 @@ export default function Profile() {
       setProfile(prev => prev ? { ...prev, avatar_url: publicUrl } : null);
     } catch (err: any) {
       console.error('Error al subir avatar:', err);
-      alert('Error al subir imagen: ' + err.message);
+      alert(t('profile.avatar_upload_error') + err.message);
       setAvatarPreview(null);
     } finally {
       setUploadingAvatar(false);
@@ -375,7 +377,7 @@ export default function Profile() {
       <div className="profile-page">
         <div className="profile-loading">
           <div className="loading-spinner" />
-          <p>Cargando perfil...</p>
+          <p>{t('profile.loading')}</p>
         </div>
       </div>
     );
@@ -384,9 +386,10 @@ export default function Profile() {
   if (!profile) return null;
 
   const avatarSrc = avatarPreview || profile.avatar_url;
-  const memberSince = new Date(profile.created_at).toLocaleDateString('es-ES', {
-    year: 'numeric', month: 'long'
-  });
+  const memberSince = new Date(profile.created_at).toLocaleDateString(
+    i18n.language === 'en' ? 'en-US' : 'es-ES',
+    { year: 'numeric', month: 'long' }
+  );
 
   // ───────────────────────────────────────────────────────────────────────────
   // RENDER PRINCIPAL
@@ -418,7 +421,7 @@ export default function Profile() {
               className="profile-avatar__edit"
               onClick={() => fileInputRef.current?.click()}
               disabled={uploadingAvatar}
-              title="Cambiar foto"
+              title={t('profile.change_photo')}
             >
               <Camera size={16} />
             </button>
@@ -471,7 +474,7 @@ export default function Profile() {
                   <button
                     className="profile-icon-btn"
                     onClick={() => setEditingUsername(true)}
-                    title="Editar username"
+                    title={t('profile.edit_username')}
                   >
                     <Edit2 size={16} />
                   </button>
@@ -480,7 +483,7 @@ export default function Profile() {
             </div>
 
             <p className="profile-email">{profile.email}</p>
-            <p className="profile-since">Miembro desde {memberSince}</p>
+            <p className="profile-since">{t('profile.member_since', { date: memberSince })}</p>
 
             {/* Toggle público/privado */}
             <button
@@ -488,9 +491,9 @@ export default function Profile() {
               onClick={handleTogglePublic}
             >
               {profile.is_public ? (
-                <><Eye size={16} />Perfil público</>
+                <><Eye size={16} />{t('profile.public_profile')}</>
               ) : (
-                <><EyeOff size={16} />Perfil privado</>
+                <><EyeOff size={16} />{t('profile.private_profile')}</>
               )}
             </button>
           </div>
@@ -504,26 +507,26 @@ export default function Profile() {
           <section className="profile-section">
             <h2 className="profile-section-title">
               <TrendingUp size={20} />
-              Estadísticas
+              {t('profile.stats')}
             </h2>
 
             {/* Stats principales */}
             <div className="profile-stats-grid">
               <div className="stat-card">
                 <span className="stat-card__value">{stats.total_animes}</span>
-                <span className="stat-card__label">Total animes</span>
+                <span className="stat-card__label">{t('profile.total_animes')}</span>
               </div>
               <div className="stat-card">
                 <span className="stat-card__value">{stats.total_episodes}</span>
-                <span className="stat-card__label">Episodios</span>
+                <span className="stat-card__label">{t('profile.episodes')}</span>
               </div>
               <div className="stat-card">
                 <span className="stat-card__value">{stats.total_hours}h</span>
-                <span className="stat-card__label">Horas vistas</span>
+                <span className="stat-card__label">{t('profile.hours_watched')}</span>
               </div>
               <div className="stat-card">
                 <span className="stat-card__value">{stats.mean_score > 0 ? stats.mean_score : '—'}</span>
-                <span className="stat-card__label">Score medio</span>
+                <span className="stat-card__label">{t('profile.mean_score')}</span>
               </div>
             </div>
 
@@ -531,22 +534,22 @@ export default function Profile() {
             <div className="profile-status-breakdown">
               <div className="status-item" style={{ '--status-color': '#3b82f6' } as any}>
                 <Play size={14} />
-                <span>Viendo</span>
+                <span>{t('profile.watching')}</span>
                 <strong>{stats.watching}</strong>
               </div>
               <div className="status-item" style={{ '--status-color': '#2a9d8f' } as any}>
                 <CheckCircle size={14} />
-                <span>Completados</span>
+                <span>{t('profile.completed')}</span>
                 <strong>{stats.completed}</strong>
               </div>
               <div className="status-item" style={{ '--status-color': '#f4a261' } as any}>
                 <Clock size={14} />
-                <span>Planeados</span>
+                <span>{t('profile.planned')}</span>
                 <strong>{stats.planned}</strong>
               </div>
               <div className="status-item" style={{ '--status-color': '#e63946' } as any}>
                 <X size={14} />
-                <span>Abandonados</span>
+                <span>{t('profile.dropped')}</span>
                 <strong>{stats.dropped}</strong>
               </div>
             </div>
@@ -554,7 +557,7 @@ export default function Profile() {
             {/* Géneros favoritos */}
             {stats.top_genres.length > 0 && (
               <div className="profile-genres">
-                <h3>Géneros favoritos</h3>
+                <h3>{t('profile.favorite_genres')}</h3>
                 <div className="profile-genres__list">
                   {stats.top_genres.map(({ genre, count }, i) => (
                     <div key={genre} className="genre-bar">
@@ -584,7 +587,7 @@ export default function Profile() {
         <section className="profile-section">
           <h2 className="profile-section-title">
             <Folder size={20} />
-            Mis Listas
+            {t('profile.my_lists')}
           </h2>
 
           <div className="profile-lists-grid">
@@ -600,7 +603,7 @@ export default function Profile() {
                 </div>
                 <div className="profile-list-card__info">
                   <span className="profile-list-card__name">{list.name}</span>
-                  <span className="profile-list-card__count">{list.anime_count} animes</span>
+                  <span className="profile-list-card__count">{list.anime_count} {t('lists.animes_bullet')}</span>
                 </div>
               </div>
             ))}
