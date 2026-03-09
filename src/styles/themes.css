@@ -1,0 +1,314 @@
+/* src/styles/themes.css
+   SOLO variables. Ningún selector de componente aquí.
+   ─────────────────────────────────────────────────── */
+
+/* ══════════════════════════════════════════════════
+   TEMA OSCURO (por defecto)
+   ══════════════════════════════════════════════════ */
+:root,
+[data-theme="dark"] {
+
+  /* Fondos */
+  --bg-primary:              #0a0a0f;
+  --bg-secondary:            #111118;
+  --bg-tertiary:             #1a1a24;
+  --bg-overlay:              rgba(10, 10, 15, 0.85);
+
+  /* Tarjetas y superficies */
+  --card-bg:                 rgba(255, 255, 255, 0.04);
+  --card-bg-hover:           rgba(255, 255, 255, 0.07);
+  --card-border:             rgba(255, 255, 255, 0.08);
+  --card-rating-bg:          rgba(11, 13, 16, 0.95);
+
+  /* Glass */
+  --glass-bg:                rgba(255, 255, 255, 0.04);
+  --glass-border:            rgba(255, 255, 255, 0.08);
+
+  /* Texto */
+  --text-primary:            #ffffff;
+  --text-secondary:          rgba(255, 255, 255, 0.55);
+  --text-muted:              rgba(255, 255, 255, 0.30);
+
+  /* Bordes */
+  --border-color:            rgba(255, 255, 255, 0.08);
+  --border-hover:            rgba(255, 255, 255, 0.16);
+
+  /* Acento */
+  --accent:                  #e63946;
+  --accent-red:              #e63946;
+  --accent-red-dark:         #c1121f;
+  --accent-hover:            #c1121f;
+  --accent-soft:             rgba(230, 57, 70, 0.12);
+  --accent-glow:             rgba(230, 57, 70, 0.25);
+  --accent-green:            #27ae60;
+
+  /* Inputs */
+  --input-bg:                rgba(255, 255, 255, 0.06);
+  --input-border:            rgba(255, 255, 255, 0.12);
+  --input-border-focus:      rgba(230, 57, 70, 0.6);
+  --input-text:              #ffffff;
+  --input-placeholder:       rgba(255, 255, 255, 0.35);
+
+  /* Navegación */
+  --nav-bg:                  rgba(10, 10, 15, 0.9);
+  --nav-border:              rgba(255, 255, 255, 0.06);
+  --nav-item-hover:          rgba(255, 255, 255, 0.06);
+
+  /* Header — siempre oscuro */
+  --header-bg:               rgba(11, 13, 16, 0.85);
+  --header-bg-scrolled:      rgba(11, 13, 16, 0.95);
+  --header-text:             #e63946;
+  --header-text-active:      #ffffff;
+
+  /* Scrollbar */
+  --scrollbar-track:         rgba(255, 255, 255, 0.03);
+  --scrollbar-thumb:         rgba(255, 255, 255, 0.12);
+
+  /* Sombras */
+  --shadow-sm:               0 2px 8px rgba(0, 0, 0, 0.4);
+  --shadow-md:               0 4px 20px rgba(0, 0, 0, 0.5);
+  --shadow-lg:               0 8px 40px rgba(0, 0, 0, 0.6);
+  --shadow-accent:           0 4px 20px rgba(230, 57, 70, 0.3);
+  --shadow-red-sm:           0 4px 15px rgba(230, 57, 70, 0.3);
+  --shadow-red-lg:           0 15px 45px rgba(230, 57, 70, 0.25);
+
+  /* Estados */
+  --color-watching:          #3b82f6;
+  --color-completed:         #2a9d8f;
+  --color-planned:           #f4a261;
+  --color-dropped:           #e63946;
+
+  /* Toggle */
+  --toggle-off:              rgba(255, 255, 255, 0.15);
+
+  /* Modales — siempre oscuros */
+  --modal-bg:                #1a1a24;
+  --modal-overlay:           rgba(0, 0, 0, 0.7);
+
+  /* Componentes específicos */
+  --curator-gradient-end:    rgba(11, 13, 16, 0.5);
+
+  /* Botón secundario */
+  --btn-secondary-bg:          rgba(230, 57, 70, 0.1);
+  --btn-secondary-color:       #e63946;
+  --btn-secondary-border:      rgba(230, 57, 70, 0.3);
+  --btn-secondary-bg-hover:    rgba(230, 57, 70, 0.2);
+  --btn-secondary-color-hover: #e63946;
+
+  /* Píldoras de género */
+  --genre-pill-bg:             rgba(230, 57, 70, 0.15);
+  --genre-pill-color:          #e63946;
+
+  /* Transiciones */
+  --transition-base:         0.2s ease;
+  --transition-slow:         0.4s ease;
+  --transition-epic:         0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* Tipografía */
+  --font-sans:               'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-serif:              'Inter', sans-serif;
+}
+
+
+/* ══════════════════════════════════════════════════
+   TEMA CLARO
+   ══════════════════════════════════════════════════ */
+[data-theme="light"] {
+
+  /* Fondos */
+  --bg-primary:              #f8f8fc;
+  --bg-secondary:            #f0f0f7;
+  --bg-tertiary:             #e8e8f0;
+  --bg-overlay:              rgba(248, 248, 252, 0.92);
+
+  /* Tarjetas y superficies */
+  --card-bg:                 #ffffff;
+  --card-bg-hover:           #f8f8fc;
+  --card-border:             rgba(0, 0, 0, 0.08);
+  --card-rating-bg:          rgba(15, 15, 20, 0.90);
+
+  /* Glass */
+  --glass-bg:                #ffffff;
+  --glass-border:            rgba(0, 0, 0, 0.08);
+
+  /* Texto */
+  --text-primary:            #0f0f14;
+  --text-secondary:          rgba(0, 0, 0, 0.55);
+  --text-muted:              rgba(0, 0, 0, 0.35);
+
+  /* Bordes */
+  --border-color:            rgba(0, 0, 0, 0.08);
+  --border-hover:            rgba(0, 0, 0, 0.16);
+
+  /* Acento — igual en ambos temas */
+  --accent:                  #e63946;
+  --accent-red:              #e63946;
+  --accent-red-dark:         #c1121f;
+  --accent-hover:            #c1121f;
+  --accent-soft:             rgba(230, 57, 70, 0.10);
+  --accent-glow:             rgba(230, 57, 70, 0.20);
+  --accent-green:            #1a8a50;
+
+  /* Inputs */
+  --input-bg:                #ffffff;
+  --input-border:            rgba(0, 0, 0, 0.15);
+  --input-border-focus:      rgba(230, 57, 70, 0.5);
+  --input-text:              #0f0f14;
+  --input-placeholder:       rgba(0, 0, 0, 0.35);
+
+  /* Navegación */
+  --nav-bg:                  rgba(248, 248, 252, 0.92);
+  --nav-border:              rgba(0, 0, 0, 0.07);
+  --nav-item-hover:          rgba(0, 0, 0, 0.05);
+
+  /* Header — siempre oscuro (decisión de marca) */
+  --header-bg:               rgba(11, 13, 16, 0.90);
+  --header-bg-scrolled:      rgba(11, 13, 16, 0.98);
+  --header-text:             #e63946;
+  --header-text-active:      #ffffff;
+
+  /* Scrollbar */
+  --scrollbar-track:         rgba(0, 0, 0, 0.04);
+  --scrollbar-thumb:         rgba(0, 0, 0, 0.15);
+
+  /* Sombras */
+  --shadow-sm:               0 2px 8px rgba(0, 0, 0, 0.08);
+  --shadow-md:               0 4px 20px rgba(0, 0, 0, 0.10);
+  --shadow-lg:               0 8px 40px rgba(0, 0, 0, 0.12);
+  --shadow-accent:           0 4px 20px rgba(230, 57, 70, 0.20);
+  --shadow-red-sm:           0 4px 15px rgba(230, 57, 70, 0.2);
+  --shadow-red-lg:           0 15px 45px rgba(230, 57, 70, 0.15);
+
+  /* Estados */
+  --color-watching:          #2563eb;
+  --color-completed:         #0d9488;
+  --color-planned:           #ea8c2a;
+  --color-dropped:           #e63946;
+
+  /* Toggle */
+  --toggle-off:              rgba(0, 0, 0, 0.20);
+
+  /* Modales — siempre oscuros */
+  --modal-bg:                #1a1a24;
+  --modal-overlay:           rgba(0, 0, 0, 0.55);
+
+  /* Componentes específicos */
+  --curator-gradient-end:    rgba(240, 240, 247, 0.5);
+
+  /* Botón secundario */
+  --btn-secondary-bg:          #ffffff;
+  --btn-secondary-color:       #c1121f;
+  --btn-secondary-border:      #c1121f;
+  --btn-secondary-bg-hover:    rgba(230, 57, 70, 0.08);
+  --btn-secondary-color-hover: #8b0000;
+
+  /* Píldoras de género */
+  --genre-pill-bg:             rgba(180, 20, 30, 0.12);
+  --genre-pill-color:          #8b0000;
+
+  /* Transiciones — igual en ambos */
+  --transition-base:         0.2s ease;
+  --transition-slow:         0.4s ease;
+  --transition-epic:         0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* Tipografía — igual en ambos */
+  --font-sans:               'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-serif:              'Inter', sans-serif;
+}
+
+
+/* ══════════════════════════════════════════════════
+   ESTILOS BASE GLOBALES
+   ══════════════════════════════════════════════════ */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  line-height: 1.6;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  -webkit-font-smoothing: antialiased;
+}
+
+input, textarea, select {
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  color: var(--input-text);
+  border-radius: 8px;
+  padding: 0.6rem 0.9rem;
+  font-size: 0.9rem;
+  width: 100%;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  font-family: inherit;
+}
+
+input::placeholder, textarea::placeholder { color: var(--input-placeholder); }
+
+input:focus, textarea:focus, select:focus {
+  border-color: var(--input-border-focus);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+::-webkit-scrollbar       { width: 6px; }
+::-webkit-scrollbar-track { background: var(--scrollbar-track); }
+::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 3px; }
+
+@keyframes fadeIn    { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fadeInUp  { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes spin      { to { transform: rotate(360deg); } }
+
+.loading-spinner {
+  width: 36px; height: 36px;
+  border: 3px solid var(--border-color);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.loading-spinner--small { width: 18px; height: 18px; border-width: 2px; }
+
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: var(--modal-overlay);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 1000; padding: 1rem;
+  animation: fadeIn 0.2s ease;
+  backdrop-filter: blur(4px);
+}
+
+.modal-content {
+  background: var(--modal-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px; padding: 2rem;
+  max-width: 440px; width: 100%;
+  position: relative;
+  animation: fadeInUp 0.25s ease;
+  box-shadow: var(--shadow-lg);
+}
+
+.modal--danger  { border-color: rgba(230, 57, 70, 0.3); }
+
+.modal-close {
+  position: absolute; top: 1rem; right: 1rem;
+  background: none; border: none; cursor: pointer;
+  color: var(--text-secondary); padding: 0.25rem;
+  display: flex; align-items: center;
+  border-radius: 6px;
+  transition: color 0.2s, background 0.2s;
+}
+
+.modal-close:hover { color: var(--text-primary); background: var(--card-bg-hover); }
+
+.modal-actions {
+  display: flex; gap: 0.75rem;
+  justify-content: flex-end; margin-top: 1.5rem;
+}

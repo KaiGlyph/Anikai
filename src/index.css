@@ -1,5 +1,5 @@
 /* Importa todos los estilos globales */
-@import './styles/variables.css';
+@import './styles/themes.css';
 @import './styles/globals.css';
 @import './styles/glass.css';
 @import './styles/scrollbar.css';

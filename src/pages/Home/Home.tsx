@@ -16,7 +16,7 @@ import onePunchMan from '@/assets/images/animes/One-Punch-Man.jpg';
 import naruto from '@/assets/images/animes/Naruto.jpg';
 
 import './Home.css';
-import '../../styles/variables.css';
+import "../../styles/themes.css";
 import '../../styles/animations.css';
 import '../../components/common/Button/button.css';
 import '../../components/layout/SectionHeader/SectionHeader.css';

@@ -1,3 +1,5 @@
+/* src/pages/Recommendations/Recommendations.css */
+
 .recommendations-page {
   padding: 2rem;
   max-width: 1400px;
@@ -15,7 +17,7 @@
   justify-content: center;
   gap: 1rem;
   font-size: 2.5rem;
-  color: #e63946;
+  color: var(--accent-red);
   margin-bottom: 0.5rem;
 }
 
@@ -26,7 +28,7 @@
 }
 
 .recommendation-card {
-  background: rgba(255, 255, 255, 0.02);
+  background: var(--card-bg);
   border: 1px solid var(--glass-border);
   border-radius: 12px;
   overflow: hidden;
@@ -36,7 +38,7 @@
 .recommendation-card:hover {
   transform: translateY(-8px);
   border-color: rgba(230, 57, 70, 0.5);
-  box-shadow: 0 15px 45px rgba(230, 57, 70, 0.3);
+  box-shadow: var(--shadow-red-lg);
 }
 
 .recommendation-card__image {
@@ -46,16 +48,15 @@
 }
 
 .recommendation-card__image img {
-  width: 100%;
-  height: 100%;
+  width: 100%; height: 100%;
   object-fit: cover;
 }
 
 .recommendation-card__rating {
   position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
-  background: rgba(11, 13, 16, 0.95);
+  top: 0.5rem; right: 0.5rem;
+  background: var(--card-rating-bg);
+  color: var(--accent-red);
   padding: 0.3rem 0.5rem;
   border-radius: 6px;
   display: flex;
@@ -64,9 +65,7 @@
   font-weight: 600;
 }
 
-.recommendation-card__content {
-  padding: 1rem;
-}
+.recommendation-card__content { padding: 1rem; }
 
 .recommendation-card__genres {
   display: flex;
@@ -75,12 +74,14 @@
   margin: 0.75rem 0;
 }
 
+/* ✅ Píldoras con variable para contraste en ambos temas */
 .genre-tag {
-  background: rgba(230, 57, 70, 0.15);
-  color: #e63946;
+  background: var(--genre-pill-bg);
+  color: var(--genre-pill-color);
   padding: 0.25rem 0.6rem;
   border-radius: 12px;
   font-size: 0.7rem;
+  font-weight: 500;
 }
 
 .recommendation-card__meta {
@@ -95,18 +96,4 @@
   text-align: center;
   padding: 4rem 2rem;
   color: var(--text-secondary);
-}
-
-.loading-spinner {
-  width: 48px;
-  height: 48px;
-  border: 4px solid rgba(230, 57, 70, 0.2);
-  border-top-color: #e63946;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin: 0 auto 1rem;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
 }

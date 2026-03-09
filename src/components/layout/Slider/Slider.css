@@ -227,7 +227,7 @@
 
 .genre-pill {
   background: rgba(230, 57, 70, 0.3);
-  color: #ffffff !important;
+  color: #ffffff;
   padding: 0.5rem 1.2rem;
   border-radius: 20px;
   font-size: 0.85rem;

@@ -25,7 +25,7 @@ import Privacy from './pages/Legal/Privacy/Privacy'
 import LegalNotice from './pages/Legal/LegalNotice/LegalNotice'
 
 // Estilos Globales
-import './styles/variables.css';
+import "./styles/themes.css";
 import './styles/glass.css';
 import './styles/animations.css';
 

@@ -7,9 +7,7 @@
   min-height: calc(100vh - 80px);
 }
 
-/* ───────────────────────────────────────────────────────────────────────────
-   EMPTY STATE (No autenticado)
-   ─────────────────────────────────────────────────────────────────────────── */
+/* ── EMPTY STATE ── */
 .lists-empty {
   display: flex;
   flex-direction: column;
@@ -29,7 +27,7 @@
 .lists-empty h2 {
   font-family: var(--font-serif);
   font-size: 2rem;
-  color: #fff;
+  color: var(--text-primary);
   margin-bottom: 1rem;
 }
 
@@ -40,9 +38,7 @@
   line-height: 1.6;
 }
 
-/* ───────────────────────────────────────────────────────────────────────────
-   HEADER
-   ─────────────────────────────────────────────────────────────────────────── */
+/* ── HEADER ── */
 .lists-header {
   display: flex;
   justify-content: space-between;
@@ -55,7 +51,7 @@
 .lists-header__title h1 {
   font-family: var(--font-serif);
   font-size: 2rem;
-  color: #e63946;
+  color: var(--accent-red);
   margin: 0;
 }
 
@@ -72,7 +68,7 @@
 
 .view-toggle {
   display: flex;
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--card-bg);
   border: 1px solid var(--glass-border);
   border-radius: 8px;
   overflow: hidden;
@@ -90,12 +86,10 @@
 .view-toggle button.active,
 .view-toggle button:hover {
   background: rgba(230, 57, 70, 0.2);
-  color: #e63946;
+  color: var(--accent-red);
 }
 
-/* ───────────────────────────────────────────────────────────────────────────
-   GRID DE LISTAS
-   ─────────────────────────────────────────────────────────────────────────── */
+/* ── GRID DE LISTAS ── */
 .lists-grid.grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -108,9 +102,8 @@
   gap: 1rem;
 }
 
-/* List Card */
 .list-card {
-  background: rgba(255, 255, 255, 0.02);
+  background: var(--card-bg);
   border: 1px solid var(--glass-border);
   border-radius: 16px;
   padding: 1.5rem;
@@ -124,7 +117,7 @@
 .list-card:hover {
   border-color: rgba(230, 57, 70, 0.4);
   transform: translateY(-4px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--shadow-md);
 }
 
 .list-card.list {
@@ -157,13 +150,13 @@
 .list-card__header h3 {
   font-size: 1.1rem;
   font-weight: 600;
-  color: #fff;
+  color: var(--text-primary);
   margin: 0;
 }
 
 .list-card__badge {
   background: rgba(230, 57, 70, 0.15);
-  color: #e63946;
+  color: var(--accent-red);
   padding: 0.2rem 0.5rem;
   border-radius: 6px;
   font-size: 0.7rem;
@@ -189,11 +182,9 @@
   font-size: 0.9rem;
 }
 
-/* ───────────────────────────────────────────────────────────────────────────
-   DETALLE DE LISTA
-   ─────────────────────────────────────────────────────────────────────────── */
+/* ── DETALLE DE LISTA ── */
 .list-detail {
-  background: rgba(255, 255, 255, 0.02);
+  background: var(--card-bg);
   border: 1px solid var(--glass-border);
   border-radius: 16px;
   padding: 1.5rem;
@@ -209,7 +200,7 @@
 }
 
 .btn--back {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--card-bg);
   border: 1px solid var(--glass-border);
   border-radius: 8px;
   padding: 0.6rem 1rem;
@@ -219,8 +210,8 @@
 }
 
 .btn--back:hover {
-  border-color: #e63946;
-  color: #e63946;
+  border-color: var(--accent-red);
+  color: var(--accent-red);
 }
 
 .list-detail__info {
@@ -242,7 +233,7 @@
 
 .list-detail__info h2 {
   font-size: 1.5rem;
-  color: #fff;
+  color: var(--text-primary);
   margin: 0;
 }
 
@@ -261,7 +252,7 @@
   width: 40px;
   height: 40px;
   padding: 0;
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--card-bg);
   border: 1px solid var(--glass-border);
   border-radius: 8px;
   color: var(--text-secondary);
@@ -274,21 +265,20 @@
 
 .btn--icon:hover {
   background: rgba(230, 57, 70, 0.2);
-  border-color: #e63946;
-  color: #e63946;
+  border-color: var(--accent-red);
+  color: var(--accent-red);
 }
 
 .btn--icon.btn--danger:hover {
-  background: #e63946;
+  background: var(--accent-red);
   color: #fff;
 }
 
-/* Buscador */
 .list-detail__search {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--input-bg);
   border: 1px solid var(--glass-border);
   border-radius: 10px;
   padding: 0.75rem 1rem;
@@ -299,7 +289,7 @@
   flex: 1;
   background: transparent;
   border: none;
-  color: #fff;
+  color: var(--text-primary);
   font-size: 0.95rem;
   outline: none;
 }
@@ -316,9 +306,7 @@
   padding: 0.25rem;
 }
 
-/* ───────────────────────────────────────────────────────────────────────────
-   ANIMES EN LISTA
-   ─────────────────────────────────────────────────────────────────────────── */
+/* ── ANIMES EN LISTA ── */
 .list-animes.grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
@@ -332,7 +320,7 @@
 }
 
 .list-anime-card {
-  background: rgba(255, 255, 255, 0.02);
+  background: var(--card-bg);
   border: 1px solid var(--glass-border);
   border-radius: 12px;
   overflow: hidden;
@@ -358,14 +346,11 @@
   position: relative;
   cursor: pointer;
   flex-shrink: 0;
-}
-
-
-.list-anime-card__image {
   aspect-ratio: 3/4;
   width: 100%;
   max-height: 160px;
 }
+
 .list-anime-card.list .list-anime-card__image {
   width: 100px;
   height: 100%;
@@ -381,12 +366,12 @@
   position: absolute;
   top: 0.5rem;
   right: 0.5rem;
-  background: rgba(11, 13, 16, 0.95);
+  background: var(--card-rating-bg);
   padding: 0.25rem 0.5rem;
   border-radius: 6px;
   font-size: 0.75rem;
   font-weight: 600;
-  color: #e63946;
+  color: var(--accent-red);
 }
 
 .list-anime-card__content {
@@ -400,7 +385,7 @@
 .list-anime-card__title {
   font-size: 0.95rem;
   font-weight: 600;
-  color: #fff;
+  color: var(--text-primary);
   margin: 0;
   cursor: pointer;
   display: -webkit-box;
@@ -410,10 +395,9 @@
 }
 
 .list-anime-card__title:hover {
-  color: #e63946;
+  color: var(--accent-red);
 }
 
-/* Progress bar */
 .list-anime-card__progress {
   display: flex;
   flex-direction: column;
@@ -422,7 +406,7 @@
 
 .progress-bar {
   height: 6px;
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--border-color);
   border-radius: 3px;
   overflow: hidden;
 }
@@ -438,7 +422,6 @@
   color: var(--text-secondary);
 }
 
-/* Status badge */
 .status-badge {
   display: inline-flex;
   padding: 0.25rem 0.6rem;
@@ -449,7 +432,6 @@
   width: fit-content;
 }
 
-/* Remove button */
 .list-anime-card__remove {
   position: absolute;
   top: 0.5rem;
@@ -473,11 +455,10 @@
 }
 
 .list-anime-card__remove:hover {
-  background: #c1121f;
+  background: var(--accent-red-dark);
   transform: scale(1.1);
 }
 
-/* Empty state */
 .list-empty {
   text-align: center;
   padding: 4rem 2rem;
@@ -489,7 +470,7 @@
 }
 
 .list-empty button {
-  background: #e63946;
+  background: var(--accent-red);
   border: none;
   border-radius: 8px;
   padding: 0.75rem 1.5rem;
@@ -500,19 +481,15 @@
 }
 
 .list-empty button:hover {
-  background: #c1121f;
+  background: var(--accent-red-dark);
 }
 
-/* ───────────────────────────────────────────────────────────────────────────
-   MODALES
-   ─────────────────────────────────────────────────────────────────────────── */
+/* ── MODALES — siempre oscuros ── */
 .modal-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.85);
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: var(--modal-overlay);
   backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
@@ -523,11 +500,11 @@
 
 @keyframes fadeIn {
   from { opacity: 0; }
-  to { opacity: 1; }
+  to   { opacity: 1; }
 }
 
 .modal-content {
-  background: rgba(11, 13, 16, 0.98);
+  background: var(--modal-bg);
   border: 1px solid var(--glass-border);
   border-radius: 20px;
   padding: 2rem;
@@ -540,52 +517,44 @@
 }
 
 @keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 .modal-content.modal--danger {
-  border-color: #e63946;
+  border-color: var(--accent-red);
 }
 
 .modal-close {
   position: absolute;
-  top: 1rem;
-  right: 1rem;
+  top: 1rem; right: 1rem;
   background: rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--glass-border);
+  border: 1px solid rgba(255, 255, 255, 0.10);
   border-radius: 8px;
   padding: 0.5rem;
-  color: var(--text-secondary);
+  color: rgba(255, 255, 255, 0.6);
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
 .modal-close:hover {
   background: rgba(230, 57, 70, 0.2);
-  border-color: #e63946;
-  color: #e63946;
+  border-color: var(--accent-red);
+  color: var(--accent-red);
 }
 
 .modal-content h2 {
   font-family: var(--font-serif);
   font-size: 1.5rem;
-  color: #fff;
+  color: #ffffff;
   margin: 0 0 0.5rem;
 }
 
 .modal-subtitle {
-  color: var(--text-secondary);
+  color: rgba(255, 255, 255, 0.55);
   margin: 0 0 1.5rem;
 }
 
-/* Formulario */
 .form-group {
   margin-bottom: 1.25rem;
 }
@@ -594,7 +563,7 @@
   display: block;
   font-size: 0.9rem;
   font-weight: 600;
-  color: #fff;
+  color: #ffffff;
   margin-bottom: 0.5rem;
 }
 
@@ -602,19 +571,24 @@
 .form-group textarea {
   width: 100%;
   padding: 0.875rem 1rem;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--glass-border);
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 10px;
-  color: #fff;
+  color: #ffffff;
   font-size: 0.95rem;
   outline: none;
   transition: all 0.3s ease;
 }
 
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: rgba(255, 255, 255, 0.35);
+}
+
 .form-group input:focus,
 .form-group textarea:focus {
-  border-color: #e63946;
-  background: rgba(230, 57, 70, 0.05);
+  border-color: var(--accent-red);
+  background: rgba(230, 57, 70, 0.07);
 }
 
 .form-group textarea {
@@ -622,7 +596,6 @@
   min-height: 80px;
 }
 
-/* Color picker */
 .color-picker {
   display: flex;
   gap: 0.5rem;
@@ -644,17 +617,15 @@
   transform: scale(1.1);
 }
 
-/* Modal actions */
 .modal-actions {
   display: flex;
   gap: 1rem;
   justify-content: flex-end;
   margin-top: 1.5rem;
   padding-top: 1.5rem;
-  border-top: 1px solid var(--glass-border);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-/* Botón editar inline en list-card */
 .list-card__edit-btn {
   background: none;
   border: none;
@@ -669,15 +640,9 @@
   margin-left: auto;
 }
 
-.list-card:hover .list-card__edit-btn {
-  opacity: 1;
-}
+.list-card:hover .list-card__edit-btn { opacity: 1; }
+.list-card__edit-btn:hover { color: var(--accent-red); }
 
-.list-card__edit-btn:hover {
-  color: #e63946;
-}
-
-/* Preview de color en el modal */
 .color-preview {
   display: inline-flex;
   align-items: center;
@@ -688,13 +653,11 @@
   border-radius: 8px;
   font-size: 0.85rem;
   font-weight: 600;
-  background: rgba(255,255,255,0.03);
+  background: rgba(255, 255, 255, 0.04);
   transition: all 0.2s ease;
 }
 
-/* ───────────────────────────────────────────────────────────────────────────
-   BOTONES
-   ─────────────────────────────────────────────────────────────────────────── */
+/* ── BOTONES ── */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -709,61 +672,47 @@
   border: none;
 }
 
-.btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
+.btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
 .btn--primary {
-  background: linear-gradient(135deg, #e63946 0%, #c1121f 100%);
+  background: linear-gradient(135deg, var(--accent-red) 0%, var(--accent-red-dark) 100%);
   color: #fff;
-  box-shadow: 0 4px 20px rgba(230, 57, 70, 0.4);
+  box-shadow: var(--shadow-red-sm);
 }
 
 .btn--primary:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 8px 30px rgba(230, 57, 70, 0.6);
+  box-shadow: var(--shadow-red-lg);
 }
 
 .btn--secondary {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--glass-border);
-  color: #fff;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #ffffff;
 }
 
 .btn--secondary:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: #e63946;
+  background: rgba(255, 255, 255, 0.12);
+  border-color: var(--accent-red);
 }
 
 .btn--danger {
   background: rgba(230, 57, 70, 0.2);
-  border: 1px solid #e63946;
-  color: #e63946;
+  border: 1px solid var(--accent-red);
+  color: var(--accent-red);
 }
 
 .btn--danger:hover:not(:disabled) {
-  background: #e63946;
+  background: var(--accent-red);
   color: #fff;
 }
 
-.list-anime-card.grid .list-anime-card__content {
-  padding: 0.5rem 0.6rem;
-}
-
-.list-anime-card.grid .list-anime-card__title {
-  font-size: 0.75rem;
-  -webkit-line-clamp: 1;
-}
-
+.list-anime-card.grid .list-anime-card__content { padding: 0.5rem 0.6rem; }
+.list-anime-card.grid .list-anime-card__title { font-size: 0.75rem; -webkit-line-clamp: 1; }
 .list-anime-card.grid .list-anime-card__progress,
-.list-anime-card.grid .status-badge {
-  display: none;
-}
+.list-anime-card.grid .status-badge { display: none; }
 
-/* ───────────────────────────────────────────────────────────────────────────
-   LOADING
-   ─────────────────────────────────────────────────────────────────────────── */
+/* ── LOADING ── */
 .lists-loading {
   display: flex;
   flex-direction: column;
@@ -774,67 +723,16 @@
   gap: 1rem;
 }
 
-.loading-spinner {
-  width: 48px;
-  height: 48px;
-  border: 4px solid rgba(230, 57, 70, 0.2);
-  border-top-color: #e63946;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-/* ───────────────────────────────────────────────────────────────────────────
-   RESPONSIVE
-   ─────────────────────────────────────────────────────────────────────────── */
+/* ── RESPONSIVE ── */
 @media (max-width: 768px) {
-  .lists-page {
-    padding: 1rem;
-  }
-
-  .lists-header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .lists-header__actions {
-    width: 100%;
-    justify-content: space-between;
-  }
-
-  .lists-grid.grid {
-    grid-template-columns: 1fr;
-  }
-
-  .list-animes.grid {
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  }
-
-  .list-anime-card.list {
-    flex-direction: column;
-    height: auto;
-  }
-
-  .list-anime-card.list .list-anime-card__image {
-    width: 100%;
-    aspect-ratio: 2/3;
-  }
-
-  .list-detail__header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .list-detail__actions {
-    width: 100%;
-    justify-content: flex-end;
-  }
-
-  .modal-content {
-    margin: 1rem;
-    padding: 1.5rem;
-  }
+  .lists-page { padding: 1rem; }
+  .lists-header { flex-direction: column; align-items: flex-start; }
+  .lists-header__actions { width: 100%; justify-content: space-between; }
+  .lists-grid.grid { grid-template-columns: 1fr; }
+  .list-animes.grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
+  .list-anime-card.list { flex-direction: column; height: auto; }
+  .list-anime-card.list .list-anime-card__image { width: 100%; aspect-ratio: 2/3; }
+  .list-detail__header { flex-direction: column; align-items: flex-start; }
+  .list-detail__actions { width: 100%; justify-content: flex-end; }
+  .modal-content { margin: 1rem; padding: 1.5rem; }
 }

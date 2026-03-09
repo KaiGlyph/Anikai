@@ -42,7 +42,7 @@
   position: absolute;
   top: 0.5rem;
   right: 0.5rem;
-  background: rgba(11, 13, 16, 0.95);
+  background: var(--card-rating-bg); /* ✅ era rgba(11, 13, 16, 0.95) */
   color: var(--accent-red);
   padding: 0.3rem 0.5rem;
   border-radius: 6px;

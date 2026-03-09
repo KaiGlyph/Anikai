@@ -1,0 +1,65 @@
+/* src/components/common/StreamingBadges.css */
+
+.streaming-badges {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.streaming-badges__label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+}
+
+.streaming-badges__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.streaming-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: 20px;
+  text-decoration: none;
+  font-size: 0.8rem;
+  font-weight: 600;
+  background: color-mix(in srgb, var(--platform-color) 12%, transparent);
+  color: var(--platform-color);
+  border: 1px solid color-mix(in srgb, var(--platform-color) 30%, transparent);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.streaming-badge:hover {
+  background: color-mix(in srgb, var(--platform-color) 20%, transparent);
+  border-color: color-mix(in srgb, var(--platform-color) 50%, transparent);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--platform-color) 25%, transparent);
+}
+
+.streaming-badge__icon {
+  display: flex;
+  align-items: center;
+  opacity: 0.9;
+}
+
+.streaming-badge__name {
+  line-height: 1;
+}
+
+/* Fallback para plataformas sin config */
+.streaming-badge--generic {
+  background: var(--card-bg);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+}

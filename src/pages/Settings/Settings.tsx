@@ -3,46 +3,31 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '../../lib/supabaseClient';
+import { useTheme } from '../../hooks/useTheme';
 import {
-  Moon, Sun, Globe, Bell, BellOff, Shield,
+  Moon, Sun, Globe, Bell, Shield,
   Lock, Trash2, Eye, EyeOff, Check, X, ChevronRight
 } from 'lucide-react';
 import './Settings.css';
 
-// ─────────────────────────────────────────────────────────────────────────────
-// TIPOS
-// ─────────────────────────────────────────────────────────────────────────────
 interface NotificationPrefs {
   new_episodes: boolean;
   new_releases: boolean;
   browser_push: boolean;
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// COMPONENTE PRINCIPAL
-// ─────────────────────────────────────────────────────────────────────────────
 export default function Settings() {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
+  const { theme, setDark, setLight } = useTheme();
 
-  // Auth
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
   const [userEmail, setUserEmail] = useState<string | null>(null);
-
-  // Idioma
   const [currentLang, setCurrentLang] = useState(i18n.language?.startsWith('en') ? 'en' : 'es');
-
-  // Notificaciones
-  const [notifications, setNotifications] = useState<NotificationPrefs>({
-    new_episodes: false,
-    new_releases: false,
-    browser_push: false,
-  });
+  const [notifications, setNotifications] = useState<NotificationPrefs>({ new_episodes: false, new_releases: false, browser_push: false });
   const [savingNotifs, setSavingNotifs] = useState(false);
   const [notifsSaved, setNotifsSaved] = useState(false);
-
-  // Cambiar contraseña
   const [showPasswordForm, setShowPasswordForm] = useState(false);
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
@@ -52,174 +37,96 @@ export default function Settings() {
   const [showConfirmPwd, setShowConfirmPwd] = useState(false);
   const [passwordLoading, setPasswordLoading] = useState(false);
   const [passwordMsg, setPasswordMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
-
-  // Eliminar cuenta
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteConfirmText, setDeleteConfirmText] = useState('');
   const [deletingAccount, setDeletingAccount] = useState(false);
 
-  // ───────────────────────────────────────────────────────────────────────────
-  // EFECTOS
-  // ───────────────────────────────────────────────────────────────────────────
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setIsLoggedIn(!!session);
       setUserId(session?.user?.id || null);
       setUserEmail(session?.user?.email || null);
     });
-
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, session) => {
       setIsLoggedIn(!!session);
       setUserId(session?.user?.id || null);
       setUserEmail(session?.user?.email || null);
     });
-
     return () => subscription.unsubscribe();
   }, []);
 
-  useEffect(() => {
-    if (userId) loadNotificationPrefs();
-  }, [userId]);
+  useEffect(() => { if (userId) loadNotificationPrefs(); }, [userId]);
+  useEffect(() => { setCurrentLang(i18n.language?.startsWith('en') ? 'en' : 'es'); }, [i18n.language]);
 
-  // Sincronizar selector de idioma si el idioma cambia externamente
-  useEffect(() => {
-    setCurrentLang(i18n.language?.startsWith('en') ? 'en' : 'es');
-  }, [i18n.language]);
-
-  // ───────────────────────────────────────────────────────────────────────────
-  // IDIOMA
-  // ───────────────────────────────────────────────────────────────────────────
   const handleLanguageChange = (lang: 'es' | 'en') => {
     setCurrentLang(lang);
     i18n.changeLanguage(lang);
-    // i18next-browser-languagedetector lo guarda en localStorage automáticamente
   };
 
-  // ───────────────────────────────────────────────────────────────────────────
-  // NOTIFICACIONES
-  // ───────────────────────────────────────────────────────────────────────────
   const loadNotificationPrefs = async () => {
     if (!userId) return;
     try {
-      const { data } = await supabase
-        .from('profiles')
-        .select('notification_prefs')
-        .eq('id', userId)
-        .single();
-      if (data?.notification_prefs) {
-        setNotifications(data.notification_prefs);
-      }
-    } catch {
-      // Si no existe la columna aún, usar defaults
-    }
+      const { data } = await supabase.from('profiles').select('notification_prefs').eq('id', userId).single();
+      if (data?.notification_prefs) setNotifications(data.notification_prefs);
+    } catch {}
   };
 
   const handleToggleNotif = async (key: keyof NotificationPrefs) => {
     const updated = { ...notifications, [key]: !notifications[key] };
-
-    // Pedir permiso del navegador si activa push
     if (key === 'browser_push' && updated.browser_push) {
       const permission = await Notification.requestPermission();
-      if (permission !== 'granted') {
-        updated.browser_push = false;
-      }
+      if (permission !== 'granted') updated.browser_push = false;
     }
-
     setNotifications(updated);
     setSavingNotifs(true);
-
     try {
-      await supabase
-        .from('profiles')
-        .update({ notification_prefs: updated })
-        .eq('id', userId);
+      await supabase.from('profiles').update({ notification_prefs: updated }).eq('id', userId);
       setNotifsSaved(true);
       setTimeout(() => setNotifsSaved(false), 2000);
-    } catch {
-      // silencioso
-    } finally {
-      setSavingNotifs(false);
-    }
+    } catch {}
+    finally { setSavingNotifs(false); }
   };
 
-  // ───────────────────────────────────────────────────────────────────────────
-  // CAMBIAR CONTRASEÑA
-  // ───────────────────────────────────────────────────────────────────────────
   const handleChangePassword = async () => {
     setPasswordMsg(null);
-
-    if (newPassword !== confirmPassword) {
-      setPasswordMsg({ type: 'error', text: t('settings.password_mismatch') });
-      return;
-    }
-    if (newPassword.length < 8) {
-      setPasswordMsg({ type: 'error', text: t('settings.password_short') });
-      return;
-    }
-
+    if (newPassword !== confirmPassword) { setPasswordMsg({ type: 'error', text: t('settings.password_mismatch') }); return; }
+    if (newPassword.length < 8) { setPasswordMsg({ type: 'error', text: t('settings.password_short') }); return; }
     try {
       setPasswordLoading(true);
-
-      // Verificar contraseña actual reautenticando
-      const { error: signInError } = await supabase.auth.signInWithPassword({
-        email: userEmail!,
-        password: currentPassword,
-      });
+      const { error: signInError } = await supabase.auth.signInWithPassword({ email: userEmail!, password: currentPassword });
       if (signInError) throw new Error(t('settings.password_mismatch'));
-
-      // Actualizar contraseña
       const { error } = await supabase.auth.updateUser({ password: newPassword });
       if (error) throw error;
-
       setPasswordMsg({ type: 'success', text: t('settings.password_success') });
-      setCurrentPassword('');
-      setNewPassword('');
-      setConfirmPassword('');
+      setCurrentPassword(''); setNewPassword(''); setConfirmPassword('');
       setTimeout(() => setShowPasswordForm(false), 2000);
     } catch (err: any) {
       setPasswordMsg({ type: 'error', text: err.message });
-    } finally {
-      setPasswordLoading(false);
-    }
+    } finally { setPasswordLoading(false); }
   };
 
-  // ───────────────────────────────────────────────────────────────────────────
-  // ELIMINAR CUENTA
-  // ───────────────────────────────────────────────────────────────────────────
   const handleDeleteAccount = async () => {
     if (deleteConfirmText !== userEmail) return;
     try {
       setDeletingAccount(true);
-      // Eliminar datos del perfil (la FK cascade se encarga del resto)
       await supabase.from('profiles').delete().eq('id', userId);
-      // Llamar a función edge o RPC si existe; si no, signOut
       await supabase.auth.signOut();
       navigate('/');
     } catch (err: any) {
       alert('Error: ' + err.message);
-    } finally {
-      setDeletingAccount(false);
-    }
+    } finally { setDeletingAccount(false); }
   };
 
-  // ───────────────────────────────────────────────────────────────────────────
-  // RENDER: sin sesión
-  // ───────────────────────────────────────────────────────────────────────────
   if (!isLoggedIn) return (
     <div className="settings-page">
       <div className="settings-empty">
         <Shield size={64} />
         <h2>{t('settings.login_required')}</h2>
-        <button className="btn btn--primary" onClick={() => navigate('/login')}>
-          {t('settings.go_login')}
-        </button>
+        <button className="btn btn--primary" onClick={() => navigate('/login')}>{t('settings.go_login')}</button>
       </div>
     </div>
   );
 
-  // ───────────────────────────────────────────────────────────────────────────
-  // RENDER PRINCIPAL
-  // ───────────────────────────────────────────────────────────────────────────
   return (
     <div className="settings-page">
       <div className="settings-container">
@@ -233,7 +140,9 @@ export default function Settings() {
         {/* ── 1. APARIENCIA ── */}
         <section className="settings-section">
           <div className="settings-section__header">
-            <div className="settings-section__icon"><Moon size={20} /></div>
+            <div className="settings-section__icon">
+              {theme === 'dark' ? <Moon size={20} /> : <Sun size={20} />}
+            </div>
             <div>
               <h2>{t('settings.appearance')}</h2>
               <p>{t('settings.appearance_sub')}</p>
@@ -243,24 +152,33 @@ export default function Settings() {
           <div className="settings-block">
             <p className="settings-block__label">{t('settings.theme')}</p>
             <div className="theme-options">
-              {/* Oscuro — activo */}
-              <button className="theme-option theme-option--active">
+
+              {/* Oscuro */}
+              <button
+                className={`theme-option ${theme === 'dark' ? 'theme-option--active' : ''}`}
+                onClick={setDark}
+              >
                 <div className="theme-option__preview theme-option__preview--dark">
                   <div /><div /><div />
                 </div>
                 <Moon size={16} />
                 <span>{t('settings.theme_dark')}</span>
-                <Check size={14} className="theme-option__check" />
+                {theme === 'dark' && <Check size={14} className="theme-option__check" />}
               </button>
-              {/* Claro — próximamente */}
-              <button className="theme-option theme-option--disabled" disabled>
+
+              {/* Claro */}
+              <button
+                className={`theme-option ${theme === 'light' ? 'theme-option--active' : ''}`}
+                onClick={setLight}
+              >
                 <div className="theme-option__preview theme-option__preview--light">
                   <div /><div /><div />
                 </div>
                 <Sun size={16} />
                 <span>{t('settings.theme_light')}</span>
-                <span className="theme-option__soon">{t('settings.theme_soon')}</span>
+                {theme === 'light' && <Check size={14} className="theme-option__check" />}
               </button>
+
             </div>
           </div>
         </section>
@@ -274,21 +192,14 @@ export default function Settings() {
               <p>{t('settings.language_sub')}</p>
             </div>
           </div>
-
           <div className="settings-block">
             <div className="language-options">
-              <button
-                className={`language-option ${currentLang === 'es' ? 'active' : ''}`}
-                onClick={() => handleLanguageChange('es')}
-              >
+              <button className={`language-option ${currentLang === 'es' ? 'active' : ''}`} onClick={() => handleLanguageChange('es')}>
                 <span className="language-option__flag">🇪🇸</span>
                 <span className="language-option__name">Español</span>
                 {currentLang === 'es' && <Check size={16} className="language-option__check" />}
               </button>
-              <button
-                className={`language-option ${currentLang === 'en' ? 'active' : ''}`}
-                onClick={() => handleLanguageChange('en')}
-              >
+              <button className={`language-option ${currentLang === 'en' ? 'active' : ''}`} onClick={() => handleLanguageChange('en')}>
                 <span className="language-option__flag">🇬🇧</span>
                 <span className="language-option__name">English</span>
                 {currentLang === 'en' && <Check size={16} className="language-option__check" />}
@@ -306,12 +217,9 @@ export default function Settings() {
               <p>{t('settings.notifications_sub')}</p>
             </div>
             {notifsSaved && (
-              <span className="settings-saved">
-                <Check size={14} />{t('settings.saved')}
-              </span>
+              <span className="settings-saved"><Check size={14} />{t('settings.saved')}</span>
             )}
           </div>
-
           <div className="settings-block">
             {([
               { key: 'new_episodes', label: t('settings.notif_new_episodes'), sub: t('settings.notif_new_episodes_sub') },
@@ -345,91 +253,47 @@ export default function Settings() {
               <p>{t('settings.security_sub')}</p>
             </div>
           </div>
-
           <div className="settings-block">
-            <div
-              className="settings-row settings-row--clickable"
-              onClick={() => setShowPasswordForm(!showPasswordForm)}
-            >
+            <div className="settings-row settings-row--clickable" onClick={() => setShowPasswordForm(!showPasswordForm)}>
               <div className="settings-row__info">
                 <span className="settings-row__label">{t('settings.change_password')}</span>
                 <span className="settings-row__sub">{t('settings.change_password_sub')}</span>
               </div>
-              <ChevronRight
-                size={20}
-                className={`settings-row__chevron ${showPasswordForm ? 'rotated' : ''}`}
-              />
+              <ChevronRight size={20} className={`settings-row__chevron ${showPasswordForm ? 'rotated' : ''}`} />
             </div>
 
-            {/* Formulario contraseña */}
             {showPasswordForm && (
               <div className="password-form">
-                {/* Contraseña actual */}
                 <div className="form-group">
                   <label>{t('settings.current_password')}</label>
                   <div className="input-password">
-                    <input
-                      type={showCurrentPwd ? 'text' : 'password'}
-                      value={currentPassword}
-                      onChange={e => setCurrentPassword(e.target.value)}
-                      placeholder="••••••••"
-                    />
-                    <button type="button" onClick={() => setShowCurrentPwd(!showCurrentPwd)}>
-                      {showCurrentPwd ? <EyeOff size={16} /> : <Eye size={16} />}
-                    </button>
+                    <input type={showCurrentPwd ? 'text' : 'password'} value={currentPassword} onChange={e => setCurrentPassword(e.target.value)} placeholder="••••••••" />
+                    <button type="button" onClick={() => setShowCurrentPwd(!showCurrentPwd)}>{showCurrentPwd ? <EyeOff size={16} /> : <Eye size={16} />}</button>
                   </div>
                 </div>
-                {/* Nueva contraseña */}
                 <div className="form-group">
                   <label>{t('settings.new_password')}</label>
                   <div className="input-password">
-                    <input
-                      type={showNewPwd ? 'text' : 'password'}
-                      value={newPassword}
-                      onChange={e => setNewPassword(e.target.value)}
-                      placeholder="••••••••"
-                    />
-                    <button type="button" onClick={() => setShowNewPwd(!showNewPwd)}>
-                      {showNewPwd ? <EyeOff size={16} /> : <Eye size={16} />}
-                    </button>
+                    <input type={showNewPwd ? 'text' : 'password'} value={newPassword} onChange={e => setNewPassword(e.target.value)} placeholder="••••••••" />
+                    <button type="button" onClick={() => setShowNewPwd(!showNewPwd)}>{showNewPwd ? <EyeOff size={16} /> : <Eye size={16} />}</button>
                   </div>
                 </div>
-                {/* Confirmar contraseña */}
                 <div className="form-group">
                   <label>{t('settings.confirm_password')}</label>
                   <div className="input-password">
-                    <input
-                      type={showConfirmPwd ? 'text' : 'password'}
-                      value={confirmPassword}
-                      onChange={e => setConfirmPassword(e.target.value)}
-                      placeholder="••••••••"
-                    />
-                    <button type="button" onClick={() => setShowConfirmPwd(!showConfirmPwd)}>
-                      {showConfirmPwd ? <EyeOff size={16} /> : <Eye size={16} />}
-                    </button>
+                    <input type={showConfirmPwd ? 'text' : 'password'} value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} placeholder="••••••••" />
+                    <button type="button" onClick={() => setShowConfirmPwd(!showConfirmPwd)}>{showConfirmPwd ? <EyeOff size={16} /> : <Eye size={16} />}</button>
                   </div>
                 </div>
-
                 {passwordMsg && (
                   <div className={`password-msg password-msg--${passwordMsg.type}`}>
                     {passwordMsg.type === 'success' ? <Check size={16} /> : <X size={16} />}
                     {passwordMsg.text}
                   </div>
                 )}
-
                 <div className="password-form__actions">
-                  <button className="btn btn--secondary" onClick={() => {
-                    setShowPasswordForm(false);
-                    setPasswordMsg(null);
-                    setCurrentPassword(''); setNewPassword(''); setConfirmPassword('');
-                  }}>
-                    {t('common.cancel')}
-                  </button>
-                  <button
-                    className="btn btn--primary"
-                    onClick={handleChangePassword}
-                    disabled={passwordLoading || !currentPassword || !newPassword || !confirmPassword}
-                  >
+                  <button className="btn btn--secondary" onClick={() => { setShowPasswordForm(false); setPasswordMsg(null); setCurrentPassword(''); setNewPassword(''); setConfirmPassword(''); }}>{t('common.cancel')}</button>
+                  <button className="btn btn--primary" onClick={handleChangePassword} disabled={passwordLoading || !currentPassword || !newPassword || !confirmPassword}>
                     {passwordLoading ? t('settings.updating') : t('settings.update_password')}
                   </button>
                 </div>
@@ -447,19 +311,14 @@ export default function Settings() {
               <p>{t('settings.danger_zone_sub')}</p>
             </div>
           </div>
-
           <div className="settings-block">
             <div className="settings-row">
               <div className="settings-row__info">
                 <span className="settings-row__label">{t('settings.delete_account')}</span>
                 <span className="settings-row__sub">{t('settings.delete_account_sub')}</span>
               </div>
-              <button
-                className="btn btn--danger"
-                onClick={() => setShowDeleteModal(true)}
-              >
-                <Trash2 size={16} />
-                {t('settings.delete_account_btn')}
+              <button className="btn btn--danger" onClick={() => setShowDeleteModal(true)}>
+                <Trash2 size={16} />{t('settings.delete_account_btn')}
               </button>
             </div>
           </div>
@@ -471,39 +330,17 @@ export default function Settings() {
       {showDeleteModal && (
         <div className="modal-overlay" onClick={() => setShowDeleteModal(false)}>
           <div className="modal-content modal--danger" onClick={e => e.stopPropagation()}>
-            <button className="modal-close" onClick={() => setShowDeleteModal(false)}>
-              <X size={24} />
-            </button>
-
+            <button className="modal-close" onClick={() => setShowDeleteModal(false)}><X size={24} /></button>
             <div className="delete-modal__icon"><Trash2 size={40} /></div>
             <h2>{t('settings.delete_confirm_title')}</h2>
             <p>{t('settings.delete_confirm_text')}</p>
-
             <div className="form-group">
-              <label>
-                {t('settings.delete_confirm_label', { email: userEmail })}
-              </label>
-              <input
-                type="text"
-                value={deleteConfirmText}
-                onChange={e => setDeleteConfirmText(e.target.value)}
-                placeholder={userEmail || ''}
-                className="delete-confirm-input"
-              />
+              <label>{t('settings.delete_confirm_label', { email: userEmail })}</label>
+              <input type="text" value={deleteConfirmText} onChange={e => setDeleteConfirmText(e.target.value)} placeholder={userEmail || ''} className="delete-confirm-input" />
             </div>
-
             <div className="modal-actions">
-              <button className="btn btn--secondary" onClick={() => {
-                setShowDeleteModal(false);
-                setDeleteConfirmText('');
-              }}>
-                {t('common.cancel')}
-              </button>
-              <button
-                className="btn btn--danger"
-                onClick={handleDeleteAccount}
-                disabled={deleteConfirmText !== userEmail || deletingAccount}
-              >
+              <button className="btn btn--secondary" onClick={() => { setShowDeleteModal(false); setDeleteConfirmText(''); }}>{t('common.cancel')}</button>
+              <button className="btn btn--danger" onClick={handleDeleteAccount} disabled={deleteConfirmText !== userEmail || deletingAccount}>
                 {deletingAccount ? t('settings.deleting') : t('settings.delete_confirm_btn')}
               </button>
             </div>
