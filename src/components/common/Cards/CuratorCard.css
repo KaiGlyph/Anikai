@@ -1,8 +1,10 @@
+/* src/components/common/Cards/CuratorCard.css */
+
 .curator-card {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-  background: linear-gradient(135deg, rgba(230, 57, 70, 0.05) 0%, var(--curator-gradient-end) 100%); /* ✅ */
+  background: linear-gradient(135deg, rgba(230, 57, 70, 0.05) 0%, var(--curator-gradient-end) 100%);
   border: 1px solid var(--glass-border);
   border-radius: 16px;
   padding: 1.25rem;
@@ -42,24 +44,27 @@
   transform: scale(1.05);
 }
 
+/* ✅ Badge dentro de la imagen, esquina superior izquierda, sin salirse */
 .curator-card__badge {
   position: absolute;
-  top: -12px;
-  left: 1.5rem;
-  transform: translateX(-20%) translateY(-66%);
+  top: 0.75rem;
+  left: 0.75rem;
   background: linear-gradient(135deg, var(--accent-red) 0%, var(--accent-red-dark) 100%);
   color: white;
-  padding: 0.5rem 1.2rem;
-  border-radius: 8px;
-  font-size: 0.75rem;
-  font-weight: 600;
+  padding: 0.35rem 0.8rem;
+  border-radius: 6px;
+  font-size: 0.7rem;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
   box-shadow: var(--shadow-red-sm);
   z-index: 10;
-  transition: all var(--transition-epic);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  white-space: nowrap;
+  max-width: calc(100% - 1.5rem);
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .curator-card__content {
@@ -101,10 +106,7 @@
   margin: 0;
 }
 
-.curator-card__spacer {
-  flex-grow: 1;
-  min-height: 5px;
-}
+.curator-card__spacer { flex-grow: 1; min-height: 5px; }
 
 .curator-card__bottom {
   display: flex;
@@ -123,9 +125,10 @@
   width: 100%;
 }
 
+/* ✅ genre-tag con variables de contraste */
 .genre-tag {
-  background: rgba(230, 57, 70, 0.15);
-  color: var(--accent-red);
+  background: var(--genre-pill-bg);
+  color: var(--genre-pill-color);
   padding: 0.35rem 0.8rem;
   border-radius: 20px;
   font-size: 0.7rem;
@@ -151,24 +154,10 @@
     gap: 2.75rem;
   }
 
-  .curator-card__image {
-    max-height: 400px;
-  }
+  .curator-card__image { max-height: 400px; }
 
-  .curator-card__badge {
-    top: 2rem;
-    left: 2rem;
-    padding: 0.6rem 1.2rem;
-    font-size: 0.8rem;
-  }
-
-  .curator-card__title {
-    font-size: 2.1rem;
-  }
-
-  .curator-card__description {
-    font-size: 0.95rem;
-  }
+  .curator-card__title { font-size: 2.1rem; }
+  .curator-card__description { font-size: 0.95rem; }
 }
 
 @media (min-width: 1200px) {
@@ -178,14 +167,5 @@
     padding: 2.75rem;
   }
 
-  .curator-card__title {
-    font-size: 2.35rem;
-  }
-
-  .curator-card__badge {
-    top: 2.5rem;
-    left: 2.5rem;
-    padding: 0.65rem 1.25rem;
-    font-size: 0.85rem;
-  }
+  .curator-card__title { font-size: 2.35rem; }
 }

@@ -393,7 +393,6 @@ export default function AnimeDetail() {
             <div className="anime-detail-hero__meta">
               <span><Calendar size={16} />{anime.year}</span>
               <span><Clock size={16} />{anime.episodes} {t('anime.episodes').toLowerCase()}</span>
-              {anime.studios?.length > 0 && <span><Play size={16} />{anime.studios[0]}</span>}
             </div>
 
             <div className="anime-detail-hero__genres">
@@ -402,9 +401,6 @@ export default function AnimeDetail() {
 
             {/* ── BOTONES PRINCIPALES ── */}
             <div className="anime-detail-hero__actions">
-              <button className="btn btn--primary">
-                <Play size={20} />{t('anime.watch_trailer')}
-              </button>
 
               {/* Añadir a lista */}
               <div className="btn-group">
