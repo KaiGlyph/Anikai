@@ -77,10 +77,13 @@
 .view-toggle button {
   background: transparent;
   border: none;
-  padding: 0.6rem;
+  padding: 0.6rem 0.9rem;
   color: var(--text-secondary);
   cursor: pointer;
   transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .view-toggle button.active,
@@ -120,9 +123,7 @@
   box-shadow: var(--shadow-md);
 }
 
-.list-card.list {
-  padding: 1.25rem;
-}
+.list-card.list { padding: 1.25rem; }
 
 .list-card__icon {
   width: 56px;
@@ -135,16 +136,14 @@
   border: 2px solid;
 }
 
-.list-card__content {
-  flex: 1;
-  min-width: 0;
-}
+.list-card__content { flex: 1; min-width: 0; }
 
 .list-card__header {
   display: flex;
   align-items: center;
   gap: 0.75rem;
   margin-bottom: 0.5rem;
+  flex-wrap: wrap;
 }
 
 .list-card__header h3 {
@@ -188,6 +187,7 @@
   border: 1px solid var(--glass-border);
   border-radius: 16px;
   padding: 1.5rem;
+  overflow: hidden; /* ✅ evita desbordamiento */
 }
 
 .list-detail__header {
@@ -207,6 +207,8 @@
   color: var(--text-secondary);
   cursor: pointer;
   transition: all 0.3s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .btn--back:hover {
@@ -219,6 +221,7 @@
   align-items: center;
   gap: 1rem;
   flex: 1;
+  min-width: 0;
 }
 
 .list-detail__icon {
@@ -229,12 +232,16 @@
   align-items: center;
   justify-content: center;
   border: 2px solid;
+  flex-shrink: 0;
 }
 
 .list-detail__info h2 {
   font-size: 1.5rem;
   color: var(--text-primary);
   margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .list-detail__description {
@@ -246,6 +253,7 @@
 .list-detail__actions {
   display: flex;
   gap: 0.5rem;
+  flex-shrink: 0;
 }
 
 .btn--icon {
@@ -261,6 +269,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0; /* ✅ no se encoge */
 }
 
 .btn--icon:hover {
@@ -292,11 +301,10 @@
   color: var(--text-primary);
   font-size: 0.95rem;
   outline: none;
+  min-width: 0;
 }
 
-.list-detail__search .search-input::placeholder {
-  color: var(--text-secondary);
-}
+.list-detail__search .search-input::placeholder { color: var(--text-secondary); }
 
 .list-detail__search .search-clear {
   background: none;
@@ -304,6 +312,7 @@
   color: var(--text-secondary);
   cursor: pointer;
   padding: 0.25rem;
+  flex-shrink: 0;
 }
 
 /* ── ANIMES EN LISTA ── */
@@ -329,18 +338,14 @@
   transition: all 0.3s ease;
 }
 
-.list-anime-card:hover {
-  border-color: rgba(230, 57, 70, 0.4);
-}
+.list-anime-card:hover { border-color: rgba(230, 57, 70, 0.4); }
 
 .list-anime-card.list {
   flex-direction: row;
   height: 140px;
 }
 
-.list-anime-card.grid {
-  flex-direction: column;
-}
+.list-anime-card.grid { flex-direction: column; }
 
 .list-anime-card__image {
   position: relative;
@@ -354,6 +359,7 @@
 .list-anime-card.list .list-anime-card__image {
   width: 100px;
   height: 100%;
+  aspect-ratio: unset;
 }
 
 .list-anime-card__image img {
@@ -380,6 +386,7 @@
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
+  min-width: 0;
 }
 
 .list-anime-card__title {
@@ -394,9 +401,7 @@
   overflow: hidden;
 }
 
-.list-anime-card__title:hover {
-  color: var(--accent-red);
-}
+.list-anime-card__title:hover { color: var(--accent-red); }
 
 .list-anime-card__progress {
   display: flex;
@@ -417,10 +422,7 @@
   transition: width 0.3s ease;
 }
 
-.progress-text {
-  font-size: 0.8rem;
-  color: var(--text-secondary);
-}
+.progress-text { font-size: 0.8rem; color: var(--text-secondary); }
 
 .status-badge {
   display: inline-flex;
@@ -450,14 +452,8 @@
   transition: all 0.3s ease;
 }
 
-.list-anime-card:hover .list-anime-card__remove {
-  opacity: 1;
-}
-
-.list-anime-card__remove:hover {
-  background: var(--accent-red-dark);
-  transform: scale(1.1);
-}
+.list-anime-card:hover .list-anime-card__remove { opacity: 1; }
+.list-anime-card__remove:hover { background: var(--accent-red-dark); transform: scale(1.1); }
 
 .list-empty {
   text-align: center;
@@ -465,9 +461,7 @@
   color: var(--text-secondary);
 }
 
-.list-empty p {
-  margin-bottom: 1rem;
-}
+.list-empty p { margin-bottom: 1rem; }
 
 .list-empty button {
   background: var(--accent-red);
@@ -480,9 +474,7 @@
   transition: all 0.3s ease;
 }
 
-.list-empty button:hover {
-  background: var(--accent-red-dark);
-}
+.list-empty button:hover { background: var(--accent-red-dark); }
 
 /* ── MODALES — siempre oscuros ── */
 .modal-overlay {
@@ -496,12 +488,11 @@
   justify-content: center;
   z-index: 9999;
   animation: fadeIn 0.3s ease;
+  padding: 1rem;
+  box-sizing: border-box;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
 .modal-content {
   background: var(--modal-bg);
@@ -521,9 +512,7 @@
   to   { opacity: 1; transform: translateY(0); }
 }
 
-.modal-content.modal--danger {
-  border-color: var(--accent-red);
-}
+.modal-content.modal--danger { border-color: var(--accent-red); }
 
 .modal-close {
   position: absolute;
@@ -543,21 +532,10 @@
   color: var(--accent-red);
 }
 
-.modal-content h2 {
-  font-family: var(--font-serif);
-  font-size: 1.5rem;
-  color: #ffffff;
-  margin: 0 0 0.5rem;
-}
+.modal-content h2 { font-family: var(--font-serif); font-size: 1.5rem; color: #ffffff; margin: 0 0 0.5rem; }
+.modal-subtitle { color: rgba(255, 255, 255, 0.55); margin: 0 0 1.5rem; }
 
-.modal-subtitle {
-  color: rgba(255, 255, 255, 0.55);
-  margin: 0 0 1.5rem;
-}
-
-.form-group {
-  margin-bottom: 1.25rem;
-}
+.form-group { margin-bottom: 1.25rem; }
 
 .form-group label {
   display: block;
@@ -578,29 +556,18 @@
   font-size: 0.95rem;
   outline: none;
   transition: all 0.3s ease;
+  box-sizing: border-box;
 }
 
 .form-group input::placeholder,
-.form-group textarea::placeholder {
-  color: rgba(255, 255, 255, 0.35);
-}
+.form-group textarea::placeholder { color: rgba(255, 255, 255, 0.35); }
 
 .form-group input:focus,
-.form-group textarea:focus {
-  border-color: var(--accent-red);
-  background: rgba(230, 57, 70, 0.07);
-}
+.form-group textarea:focus { border-color: var(--accent-red); background: rgba(230, 57, 70, 0.07); }
 
-.form-group textarea {
-  resize: vertical;
-  min-height: 80px;
-}
+.form-group textarea { resize: vertical; min-height: 80px; }
 
-.color-picker {
-  display: flex;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-}
+.color-picker { display: flex; gap: 0.5rem; flex-wrap: wrap; }
 
 .color-option {
   width: 36px;
@@ -612,10 +579,7 @@
 }
 
 .color-option:hover,
-.color-option.active {
-  border-color: #fff;
-  transform: scale(1.1);
-}
+.color-option.active { border-color: #fff; transform: scale(1.1); }
 
 .modal-actions {
   display: flex;
@@ -680,10 +644,7 @@
   box-shadow: var(--shadow-red-sm);
 }
 
-.btn--primary:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-red-lg);
-}
+.btn--primary:hover:not(:disabled) { transform: translateY(-2px); box-shadow: var(--shadow-red-lg); }
 
 .btn--secondary {
   background: rgba(255, 255, 255, 0.07);
@@ -691,10 +652,7 @@
   color: #ffffff;
 }
 
-.btn--secondary:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.12);
-  border-color: var(--accent-red);
-}
+.btn--secondary:hover:not(:disabled) { background: rgba(255, 255, 255, 0.12); border-color: var(--accent-red); }
 
 .btn--danger {
   background: rgba(230, 57, 70, 0.2);
@@ -702,10 +660,7 @@
   color: var(--accent-red);
 }
 
-.btn--danger:hover:not(:disabled) {
-  background: var(--accent-red);
-  color: #fff;
-}
+.btn--danger:hover:not(:disabled) { background: var(--accent-red); color: #fff; }
 
 .list-anime-card.grid .list-anime-card__content { padding: 0.5rem 0.6rem; }
 .list-anime-card.grid .list-anime-card__title { font-size: 0.75rem; -webkit-line-clamp: 1; }
@@ -723,16 +678,116 @@
   gap: 1rem;
 }
 
-/* ── RESPONSIVE ── */
+/* ════════════════════════════════════
+   RESPONSIVE MÓVIL
+   ════════════════════════════════════ */
 @media (max-width: 768px) {
   .lists-page { padding: 1rem; }
+
+  /* ── Header principal ── */
   .lists-header { flex-direction: column; align-items: flex-start; }
-  .lists-header__actions { width: 100%; justify-content: space-between; }
+  .lists-header__title h1 { font-size: 1.5rem; }
+
+  /* ✅ Actions en fila: toggle + botón nueva lista bien alineados */
+  .lists-header__actions {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .lists-header__actions .btn--primary {
+    flex: 1;        /* ocupa el espacio restante */
+    min-width: 0;
+    padding: 0.75rem 1rem;
+    font-size: 0.85rem;
+  }
+
+  .view-toggle button {
+    padding: 0.75rem 1rem; /* área de toque más grande */
+  }
+
+  /* ── Grid de listas ── */
   .lists-grid.grid { grid-template-columns: 1fr; }
-  .list-animes.grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
-  .list-anime-card.list { flex-direction: column; height: auto; }
-  .list-anime-card.list .list-anime-card__image { width: 100%; aspect-ratio: 2/3; }
-  .list-detail__header { flex-direction: column; align-items: flex-start; }
-  .list-detail__actions { width: 100%; justify-content: flex-end; }
-  .modal-content { margin: 1rem; padding: 1.5rem; }
+
+  /* ── Grid de animes ── */
+  .list-animes.grid {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 0.75rem;
+  }
+
+  /* ── Card anime en modo lista ── */
+  .list-anime-card.list { height: 100px; }
+  .list-anime-card.list .list-anime-card__image { width: 70px; }
+  .list-anime-card.list .list-anime-card__content { padding: 0.6rem; gap: 0.4rem; }
+  .list-anime-card.list .list-anime-card__title { font-size: 0.8rem; }
+
+  /* ✅ Botón eliminar anime siempre visible en móvil */
+  .list-anime-card__remove { opacity: 1; }
+
+  /* ── Header del detalle ── */
+  .list-detail { padding: 1rem; }
+
+  .list-detail__header {
+  display: flex;
+  flex-direction: column;  /* ✅ apila en columna */
+  align-items: stretch;
+  gap: 0.75rem;
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+}
+
+/* Fila 1: info + acciones juntos */
+.list-detail__info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.list-detail__info h2 {
+  font-size: 1rem;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.list-detail__actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-left: auto;  /* ✅ empuja los botones a la derecha dentro de la fila */
+  flex-shrink: 0;
+}
+
+/* Fila 2: botón volver ancho completo */
+.btn--back {
+  width: 100%;
+  justify-content: center;
+  padding: 0.6rem;
+  font-size: 0.85rem;
+  order: -1;
+}
+.list-detail__actions .btn--icon {
+  width: 46%;
+  height: 36px ;
+  min-width: 66px;
+  flex-shrink: 0;
+  flex-grow: 0;
+}
+
+  /* ── Modal ── */
+  .modal-content { padding: 1.5rem; }
+  .modal-actions {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .modal-actions .btn { width: 100%; justify-content: center; }
+}
+
+@media (max-width: 480px) {
+  .list-animes.grid { grid-template-columns: repeat(3, 1fr); }
+  .list-detail__search { padding: 0.6rem 0.75rem; }
 }
